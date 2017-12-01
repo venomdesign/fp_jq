@@ -1,0 +1,5 @@
+﻿<kendo-grid [data]="detail" [pageSize]="25" [skip]="skip" [pageable]="true" [scrollable]="'none'" (pageChange)="pageChange($event)">
+    <kendo-grid-column field="transactionDescription" title="Description of Transaction" width="480"></kendo-grid-column>
+    <kendo-grid-column field="chargeAmount" title="Charge" format="{0:c}"></kendo-grid-column>
+    <ng-template kendoPagerTemplate></ng-template>
+</kendo-grid>

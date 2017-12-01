@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NetEasyPay</name>
+    </assembly>
+    <members>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.AddRole(System.String)">
+            <summary>
+            Add new APP_ROLE to FOPS database
+            </summary>
+            <param name="value">(string) JSON version of APP_ROLE object to create</param>
+            <returns>HTTPResult with JSON version of new APP_ROLE</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.AddRoleToUser(System.Int64,System.Int32,System.String)">
+            <summary>
+            Adds a new USER_ROLE record to associate a role with a user
+            </summary>
+            <param name="UserId"></param>
+            <param name="RoleId"></param>
+            <param name="APP_ID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.AddUser(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Add a new APP_USER to the FOPS database
+            </summary>
+            <param name="value">(string) JSON version of new APP_USER</param>
+            <returns>HTTPResponse with JSON representation of new APP_USER object</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.AddPermission(System.String)">
+            <summary>
+            Adds a new APP_PERMISSION record to the database.
+            </summary>
+            <param name="value">(string) JSON serialized APP_PERMISSION object fully hydrated.</param>
+            <returns>(APP_PERMISSION) object in a JsonResult</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.AddPermissionToRole(System.Int32,System.Int32)">
+            <summary>
+            Adds an app permission to a specified role
+            </summary>
+            <param name="RoleId"></param>
+            <param name="PermissionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.SaveUserToken(System.Int64,System.Int64)">
+            <summary>
+            Saves the user's token to the database.
+            </summary>
+            <param name="userId">(long) USER_SYS_ID to associate the token with</param>
+            <param name="token">(long) Token to be stored</param>
+            <returns></returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.DeleteRole(System.Int32)">
+            <summary>
+            Soft delete a role in the FOPS application
+            </summary>
+            <param name="RoleId">(int) ROLE_SYS_ID of the role to deactivate</param>
+            <returns>HTTPResult with JSON representation of the deactivated APP_ROLE</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.DeleteUser(System.Int64)">
+            <summary>
+            Soft delete a user in the FOPS application
+            </summary>
+            <param name="UserId">(int) USER_SYS_ID of the user to deactivate</param>
+            <returns>HTTPResult with JSON serialized APP_USER object</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.RemoveRoleFromUser(System.Int64,System.Int32)">
+            <summary>
+            Remove the association between an APP_USER and APP_ROLE
+            </summary>
+            <param name="UserId">(int) USER_SYS_ID of the user to remove role from</param>
+            <param name="RoleId">(int) ROLE_SYS_ID of the role to remove from the user</param>
+            <returns>HTTPResult of the database remove</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.DeleteUserToken(System.Int64,System.Int64)">
+            <summary>
+            Delete a user's token from the database.  This is a HARD delete and the record is not backed up anywhere.
+            </summary>
+            <param name="userId">(long) USER_SYS_ID of the user that owns the token</param>
+            <param name="token">(long) Token to delete</param>
+            <returns>(APIController) Response indicating success (OK or BadRequest)</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.DeletePermissionFromRole(System.Int32,System.Int32)">
+            <summary>
+            Remove the ROLE_PERMISSION association record from the database.  This is a HARD delete.
+            </summary>
+            <param name="RoleId">(int) ROLE_ID of the ROLE_PERMISSION to remove</param>
+            <param name="PermissionId">(int) PERMISSION_ID of the ROLE_PERMISSION to remove</param>
+            <returns>(bool) True if deleted, False if error</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.DeletePermission(System.Int32)">
+            <summary>
+            Removes a permission from the database.  This is a HARD delete.
+            </summary>
+            <param name="PermissionId">(int) PERMISSION_SYS_ID to delte</param>
+            <returns>(bool) True if deleted, False if error</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetActiveRoles">
+            <summary>
+            Get All Active Roles in the FOPS database
+            </summary>
+            <returns>HTTPResponse with JSON of Active Roles</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetRole(System.Int32)">
+            <summary>
+            Get specific role from FOPS database
+            </summary>
+            <param name="Id">(int) ROLE_SYS_ID of the role to retreive</param>
+            <returns>HttpResponse with JSON of requested role</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetRoles">
+            <summary>
+            Get All Roles in system regardless of IsActive flag
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetRolesByUser(System.Int64)">
+            <summary>
+            Gets all APP_ROLEs for specified user
+            </summary>
+            <param name="UserId">(int) USER_SYS_ID to get roles for</param>
+            <returns>HTTPResponse with JSON of APP_ROLE array</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetPermissionsByRole(System.Int32)">
+            <summary>
+            Gets list of APP_PERMISSIONS for the specified role
+            </summary>
+            <param name="RoleId">(int) ROLE_SYS_ID of the role to load permissions for</param>
+            <returns>(List(APP_PERMISSION)) A list of the APP_PERMISSIONS available for specified role</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetPermissions">
+            <summary>
+            Loads all permissions in the database
+            </summary>
+            <returns>(List(APP_PERMISSION)) Full list of permissions, regardless of IS_ACTIVE</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetUser(System.Int64)">
+            <summary>
+            Get user by USER_SYS_ID
+            </summary>
+            <param name="UserId">(int) USER_SYS_ID of user to retreieve</param>
+            <returns>HTTPResult with JSON of APP_USER</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetUser(System.String)">
+            <summary>
+            Get user by USER_NAME (email address)
+            </summary>
+            <param name="userName">(string) Email address of user to retreieve</param>
+            <returns>HTTPResult with JSON of APP_USER</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetPendingUsers(System.String)">
+            <summary>
+            Returns all users who are pending approval in EasyPay.  This function will be used
+            to allow the users access to the application.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.GetUsers">
+            <summary>
+            Gets all users in FOPS database
+            </summary>
+            <returns>HTTPResponse with JSON array of APP_USER</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.UpdateUser(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Update the existing APP_USER in the FOPS database with the one sent in
+            </summary>
+            <param name="value">(string) Serialized JSON APP_USER object</param>
+            <returns>HTTPResult with JSON representation of updated APP_USER</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.SubmitRegistration(System.String)">
+            <summary>
+            Takes the user's registration information, validates that there isn't an account with the information already in the database,
+            and creates a new registration.
+            </summary>
+            <param name="registration">(Json) Object with all of the registration properties</param>
+            <returns>(HTTPResponse) Result of the registration</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.ApproveRegistration(System.Int64)">
+            <summary>
+            Approves a user and activates their account.  This will allow the user to begin making payments.
+            </summary>
+            <param name="UserIdToApprove">(long) USER_SYS_ID of the user to activate</param>
+            <returns>(APP_USER) Populated APP_USER object with the settings updated for activation.</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AdministrationController.AssociateCRRARContactToUser(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            Creates an association between the USER_SYS_ID and the CRRAR Contact and Attention Ids
+            </summary>
+            <param name="UserSysID">(long) USER_SYS_ID of user to create association for</param>
+            <param name="ContactId">(long) CRRAR_CONTACT_ID from CRRAR system</param>
+            <param name="attnId">(long) OPTIONAL: CRRAR_ATTENTION_ID from the CRRAR system</param>
+            <returns>(USER_CONTACT) Object with association created and new index</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AuthorizationController.LoadUser(System.Int64)">
+            <summary>
+            Returns a fully populated APP_USER object with roles AND permissions.  
+            </summary>
+            <param name="UserId">(long) USER_SYS_ID of the user to load</param>
+            <returns>(APP_USER) Fully hydrated APP_USER object with ROLES and PERMISSIONS</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AuthorizationController.GetClaims">
+            <summary>
+            Returns each claim contained in the JWT token
+            </summary>
+            <remarks>
+            This method will return an individual object containing the 
+            subject, claim type and claim value.
+            </remarks>
+            <returns>JSON</returns>
+        </member>
+        <member name="M:NetEasyPay.Controllers.AuthorizationController.ValidateEmail(System.Boolean,System.String)">
+            <summary>
+            This method takes the user's email address and validates it against the FOPS database
+            to determine if they already have a user account
+            </summary>
+            <param name="email">(string) Email address to validate</param>
+            <param name="SSO">(bool) Does the user already have an SSO token?</param>
+            <returns>(HTTPResult) Ok if user has account, Unauthorized/NotFound if not</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,576 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+<style>
+span.k-widget.k-tooltip-validation {
+                    display; inline-block;
+                    width: 160px;
+                    text-align: left;
+                    border: 0;
+                    padding: 0;
+                    margin: 0;
+                    background: none;
+                    box-shadow: none;
+                    color: red;
+                }
+
+                .k-tooltip-validation .k-warning {
+                    display: none;
+                }</style>
+
+    <div class="col-lg-3 ml-auto mr-auto" id="registrationPreFlight">
+        <form id="pageForm" class="form-signin" onsubmit="return submitForm()">
+            <h2 class="title">Registration</h2>
+            <div id="errorSummary" class="alert alert-danger" style="display: none;">
+                <div id="errorMessage"></div>
+            </div>
+            <div class="form-group">
+                <label for="username">Enter your email address <span class="icon-danger">*</span></label>
+                <input type="email" id="username" maxlength="30" required class="form-control col-lg-12">
+            </div>
+            <button id="formSubmit" class="btn btn-round" type="submit" disabled="disabled">Submit</button>
+        </form>
+    </div>
+
+
+
+
+<div class="container">
+<div class="row">
+<div class="col-sm-12 ml-auto mr-auto">
+
+      
+<form id="registrationForm" method="post" class="form-horizontal" action="" novalidate>
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <label class="control-label" for="USER_NAME">Email Address <span class="icon-danger">*</span></label>
+            <div class="errorCheck">
+                <input id="USER_NAME" name="USER_NAME" type="email" class="form-control" required pattern="[a-z0-9._%+-]+\u0040[a-z0-9.-]+\.[a-z]{2,3}$" data-email-msg="Email format is not valid" />
+                <input id="hid_username" type="hidden" value="" />
+            </div>
+        </div>
+    </div>
+    <div class="row" style="display: none;">
+        <div class="form-group col-sm-6">
+            <label class=" control-label" for="PASSWORD">Password</label>
+            <div class="errorCheck">
+                <input type="password" class="form-control" id="PASSWORD" name="PASSWORD">
+            </div>
+        </div>
+        <div class="form-group col-sm-6">
+            <label class="control-label" for="confirm_PASSWORD">Confirm password</label>
+            <div class="errorCheck">
+                <input type="password" class="form-control" id="confirm_PASSWORD" name="confirm_PASSWORD">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <!--label for="FIRST_NAME">First Name <span class="icon-danger">*</span></label>
+            <input type="text" class="form-control" id="FIRST_NAME" maxlength="50" required pattern="[a-zA-Z]*" /-->
+            <label class="control-label" for="FIRST_NAME">First name <span class="icon-danger">*</span></label>
+            <div class="errorCheck">
+                <input type="text" class="form-control" id="FIRST_NAME" name="FIRST_NAME">
+            </div>
+        </div>
+        <div class="form-group col-sm-6">
+            <!--label for="LAST_NAME">Last Name <span class="icon-danger">*</span></label>
+            <input type="text" class="form-control" pattern="[a-zA-Z]*" maxlength="50" id="LAST_NAME" required value="" /-->
+            <label class="control-label" for="LAST_NAME">Last name <span class="icon-danger">*</span></label>
+            <div class="errorCheck">
+                <input type="text" class="form-control" id="LAST_NAME" name="LAST_NAME">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <label class="control-label" for="COMPANY_ID">Company Name <span class="icon-danger">*</span></label>
+            <div class="errorCheck"><input type="text" class="form-control" id="COMPANY_ID" name="COMPANY_ID"></div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label class="control-label" for="phone1">Phone Number <span class="icon-danger">*</span></label>
+            <div class="errorCheck"><input type="text" class="form-control" id="phone1" name="phone1"></div>
+        </div>
+        <div class="form-group col-sm-6">
+            <label class="control-label" for="ext1">Ext <!--span class="icon-danger">*</span--></label>
+            <div class="errorCheck"><input type="text" class="form-control" id="ext1" name="ext1"></div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label class="control-label" for="MOBILE_NUMBER">Mobile Number <!--span class="icon-danger">*</span--></label>
+            <div class="errorCheck"><input type="text" class="form-control" id="MOBILE_NUMBER" name="MOBILE_NUMBER"></div>
+        </div>
+        <div class="form-group col-sm-6"></div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label for="TIMEZONE" class="control-label">Time Zone <span class="icon-danger">*</span></label>
+            <div class="errorCheck">
+                <select class="form-control" id="TIMEZONE" name="TIMEZONE" required>
+                    <option>---Please Choose---</option>
+                    <option value="AST">AST</option>
+                    <option value="EST">EST</option>
+                    <option value="CST">CST</option>
+                    <option value="MST">MST</option>
+                    <option value="PST">PST</option>
+                    <option value="AKST">AKST</option>
+                    <option value="HST">HST</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group col-sm-6"></div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+           <label for="COMMENTS_AGENTS" class="control-label">Comments/Additional Info</label>
+            <textarea class="form-control" id="COMMENTS_AGENTS" rows="3" placeholder="Please add you associations you would like the Approver to verify"></textarea>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <label class="control-label">Enable Multi-Factor Authentication</label>
+            <div class="form-check-radio">
+                <label class="form-check-label">
+                    <input class="form-check-input" id="mFaEnabled" type="radio" value="Yes"> Yes
+                    <span class="form-check-sign"></span>
+                </label>
+            </div>
+            <div class="form-check-radio">
+                <label class="form-check-label">
+                    <input class="form-check-input" id="mFaEnabled" type="radio" value="No" checked> No
+                    <span class="form-check-sign"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group pull-right">
+            <button class="btn btn-primary" id="register" name="signup1" value="Register">Register</button>
+            <a href="/home/login" class="btn btn-default">Cancel</a>
+        </div>
+    </div>
+
+
+<!--div class="form-group">
+<div class="errorCheck col-sm-offset-4">
+<div class="checkbox">
+<label>
+<input type="checkbox" id="agree1" name="agree1" value="agree">Please agree to our policy
+</label>
+</div>
+</div>
+</div-->
+</form>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="container" id="registrationForm" style="display: none;"><!-- -->
+    
+        <form id="registrationForm" novalidate>
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <label for="USER_NAME" class="required">Email Address <span class="icon-danger">*</span></label>
+                    <input id="userName" type="email" class="form-control" required pattern="[a-z0-9._%+-]+\u0040[a-z0-9.-]+\.[a-z]{2,3}$" data-email-msg="Email format is not valid" />
+                    <input id="hid_username" type="hidden" value="" />
+                </div>
+            </div>
+            <div id="passwordRow" class="row" style="display: none;">
+                <div class="form-group col-sm-6">
+                    <label for="PASSWORD">Password <span class="icon-danger">*</span></label>
+                    <input type="text" class="form-control" id="PASSWORD" name="PASSWORD" required />
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="CONF_PASSWORD">Confirm Password <span class="icon-danger">*</span></label>
+                    <input type="text" class="form-control" id="CONF_PASSWORD" name="CONF_PASSWORD" required />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="FIRST_NAME">First Name <span class="icon-danger">*</span></label>
+                    <input type="text" class="form-control" id="FIRST_NAME" maxlength="50" required pattern="[a-zA-Z]*" />
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="LAST_NAME">Last Name <span class="icon-danger">*</span></label>
+                    <input type="text" class="form-control" pattern="[a-zA-Z]*" maxlength="50" id="LAST_NAME" required />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <label for="COMPANY_ID">Company Name <span class="icon-danger">*</span></label>
+                    <input type="text" class="form-control" id="COMPANY_ID" name="COMPANY_ID" maxlength="50" required />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="PHONE_NUMBER">Phone Number <span class="icon-danger">*</span></label>
+                    <input type="text" class="form-control" id="PHONE_NUMBER" maxlength="14" required value="" />
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="PHONE_EXTENSION">EXT</label>
+                    <input type="text" maxlength="5" class="form-control" id="PHONE_EXTENSION" pattern="[0-9]+" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-8">
+                    <label for="MOBILE_NUMBER">Mobile Number</label>
+                    <input type="text" class="form-control" id="MOBILE_NUMBER" value="" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-3">
+                    <label for="TIMEZONE">Time Zone <span class="icon-danger">*</span></label>
+                    <select class="form-control" id="TIMEZONE" required>
+                        <option value="AST">AST</option>
+                        <option value="EST">EST</option>
+                        <option value="CST">CST</option>
+                        <option value="MST">MST</option>
+                        <option value="PST">PST</option>
+                        <option value="AKST">AKST</option>
+                        <option value="HST">HST</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <label for="COMMENTS_AGENTS">Comments/Additional Info</label>
+                    <textarea class="form-control" id="COMMENTS_AGENTS" rows="3" placeholder="Please add you associations you would like the Approver to verify"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <label class="control-label">Enable Multi-Factor Authentication</label>
+                    <div class="form-check-radio">
+                        <label class="form-check-label">
+                            <input class="form-check-input" id="mFaEnabled" type="radio" value="Yes"> Yes
+                            <span class="form-check-sign"></span>
+                        </label>
+                    </div>
+                    <div class="form-check-radio">
+                        <label class="form-check-label">
+                            <input class="form-check-input" id="mFaEnabled" type="radio" value="No" checked> No
+                            <span class="form-check-sign"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group pull-right">
+                    <button class="btn btn-primary" id="register">Register</button>
+                    <a href="/home/login" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+            <div class="status"></div>
+        </form>
+    </div>
+    
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+}
+@section pageScripts{
+
+
+<script type="text/javascript">
+        $.validator.setDefaults({
+            submitHandler: function () {
+                alert( "submitted!" );
+            }
+        });
+
+        $(document).ready(function(){
+            
+            $("#registrationForm").validate({
+                rules: {
+                    FIRST_NAME: "required",
+                    LAST_NAME: "required",
+                   /* username1: {
+                        required: true,
+                        minlength: 2
+                    },*/
+                    PASSWORD: {
+                        required: true,
+                        minlength: 5
+                    },
+                    CONF_PASSWORD: {
+                        required: true,
+                        minlength: 5,
+                        equalTo: "#PASSWORD"
+                    },
+                    USER_NAME: {
+                        required: true,
+                        email: true
+                    },
+                    TIMEZONE: "required",
+                    COMPANY_ID: "required",
+                    phone1: "required"
+                    /*, agree1: "required"*/
+                },
+                messages: {
+                    FIRST_NAME: "Please enter your firstname",
+                    LAST_NAME: "Please enter your lastname",
+                    TIMEZONE: "Please select your timezone",
+                    COMPANY_ID: "Please enter your Company Name",
+                    phone1: "Please eneter a valid phone number",
+                   /* username1: {
+                        required: "Please enter a username",
+                        minlength: "Your username must consist of at least 2 characters"
+                    },*/
+                    PASSWORD: {
+                        required: "Please provide a password",
+                        minlength: "Your password must be at least 5 characters long"
+                    },
+                    confirm_PASSWORD: {
+                        required: "Please provide a password",
+                        minlength: "Your password must be at least 5 characters long",
+                        equalTo: "Please enter the same password as above"
+                    },
+                    USER_NAME: "Please enter a valid email address"/*,
+                    agree1: "Please accept our policy"*/
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    // Add the `help-block` class to the error element
+                    error.addClass( "help-block" );
+
+                    // Add `has-feedback` class to the parent div.form-group
+                    // in order to add icons to inputs
+                    element.parents( ".errorCheck").addClass( "has-feedback" );
+
+                    if ( element.prop( "type" ) === "checkbox" ) {
+                        error.insertAfter( element.parent( "label" ) );
+                    } else {
+                        error.insertAfter( element );
+                    }
+
+                    // Add the span element, if doesn't exists, and apply the icon classes to it.
+                    if ( !element.next( "span" )[ 0 ] ) {
+                        $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>").insertAfter( element );
+                    }
+                },
+                success: function ( label, element ) {
+                    // Add the span element, if doesn't exists, and apply the icon classes to it.
+                    if ( !$(element ).next( "span" )[ 0 ] ) {
+                        $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>").insertAfter( $(element ) );
+                    }
+                },
+                highlight: function ( element, errorClass, validClass ) {
+                    $(element ).parents( ".errorCheck").addClass( "has-warning").removeClass( "has-success" );
+                    $(element ).next( "span").addClass( "glyphicon-remove").removeClass( "glyphicon-ok" );
+                },
+                unhighlight: function ( element, errorClass, validClass ) {
+                    $(element ).parents( ".errorCheck").addClass( "has-success").removeClass( "has-warning" );
+                    $(element ).next( "span").addClass( "glyphicon-ok").removeClass( "glyphicon-remove" );
+                }
+            });
+        });
+    </script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#username").on("blur",
+                function () {
+                    checkUsername($(this).val());
+                });
+
+            // set up the masking for the phone and mobile
+            $("#PHONE_NUMBER").mask("(999) 999-9999");
+            $("#MOBILE_NUMBER").mask("(999) 999-9999");
+            $("#PHONE_EXTENSION").mask("99999");
+
+            var validator = $("#registrationForm").kendoValidator().data("kendoValidator"),
+                status = $(".status");
+
+            // Check for parameters
+            var qp = url2json(window.location.href);
+            console.log(qp);
+            if (qp) {
+                if (qp.email) {
+                    $("#USER_NAME").val(qp.email);
+                    $("#hid_username").val(qp.email);
+                    $("#USER_NAME").attr("disabled", "disabled");
+                }
+            }
+
+            if (localStorage.getItem("ssoNoFops") === "true") {
+                $("#passwordRow").show();
+            }
+
+            $("form").submit(function (event) {
+                event.preventDefault();
+                if (validator.validate()) {
+                    status.text("You're good.")
+                        .removeClass("invalid")
+                        .addClass("valid");
+                } else {
+                    status.text("Oops! There is invalid data in the form.")
+                        .removeClass("valid")
+                        .addClass("invalid");
+                }
+            });
+
+            $("#register").click(function () {
+
+                if (validator.validate()) {
+                    var user = {
+                        "USER_SYS_ID": "0",
+                        "USER_NAME": $("#USER_NAME:disabled") ? $("#hid_userName").val() : $("#USER_NAME").val(),
+                        "PASSWORD": $("#password").val(),
+                        "CONF_PASSWORD": $("#conf_password").val(),
+                        "FIRST_NAME": $("#FIRST_NAME:disabled") ? $("#hid_firstName").val() : $("#FIRST_NAME").val(),
+                        "LAST_NAME": $("#LAST_NAME:disabled") ? $("#hid_lastName").val() : $("#LAST_NAME").val(),
+                        "COMPANY_ID": $("#COMPANY_ID:disabled") ? $("#hid_companyId").val() : $("#COMPANY_ID").val(),
+                        "PHONE_NUMBER": $("#PHONE_NUMBER").val().replace(/\D/g,''),
+                        "PHONE_EXTENSION": $("#PHONE_EXTENSION").val(),
+                        "MOBILE_NUMBER": $("#MOBILE_NUMBER").val().replace(/\D/g,''),
+                        "TIMEZONE": $("#TIMEZONE").val(),
+                        "IS_LOCKED": "0",
+                        "IS_ACTIVE": "0",
+                        "COMMENTS_AGENTS": $("#COMMENTS_AGENTS").val(),
+                        "USER_GUID": ""
+                    };
+                    console.log(user);
+                    $.ajax({
+                        type: "POST",
+                        accepts: "application/json",
+                        contentType: 'application/json',
+                        url: "/api/v1/Administration/AddUser",
+                        data: JSON.stringify(user)
+                    }).done(function (user) {
+                        console.log('New user added.', user)
+                    });
+                }
+            });
+        });
+
+        var validSso = false;
+
+        function checkUsername(value) {
+            // clear any errors
+            if ($("#errorSummary:visible")) {
+                $("#errorMessage").val('');
+                $("#errorSummary").hide();
+            }
+
+            // Set up test data if test email address encountered
+            setTestData(value);
+
+            // Scenario 1: Simulate internal email address being submitted
+            var domain = value.split('@@');
+            var internalDomains = ["fnf.com"];
+            if (internalDomains.indexOf(domain[1]) != -1) {
+                $("#errorMessage").html("Internal email addresses may not be registered via this form. Please contact the helpdesk at XXX-XXX-XXXX for assistance.");
+                $("#errorSummary").show();
+                return false;
+            }
+
+            // Scenario 2: Is existing SSO user
+            // Contact the Authorization Service to see the registration status of Auth0
+            // Simulate Blocked SSO from Auth0
+            if (localStorage.getItem("ssoBlockedAuth0") === "true") {
+                $("#errorMessage").html("An issue has been detected with this account. Please contact the helpdesk at XXX-XXX-XXXX for assistance. (Auth0 Blocked)");
+                $("#errorSummary").show();
+                return false;
+            } else {
+                // Check for token, if no token, check Auth0 via Authorization Service
+                if (localStorage.getItem("validAuth0Token") === "true") {
+                    validSso = true;
+                    Promise.resolve(validateEasyPayUser(validSso, value)).then((result) => {
+                        console.log("Result from EasyPay query: ", result);
+                        //if (response) {
+                        //    // They're in EasyPay, check to see if they Active and not Blocked
+                        //    var user = json.parse(response.results);
+                        //    if (user.is_Active === "0" || user.is_Blocked === "1") {
+                        //        $("#errorMessage").html("An issue has been detected with this account. Please contact the helpdesk at XXX-XXX-XXXX for assistance. (EasyPay Blocked/Inactive)");
+                        //        $("#errorSummary").show();
+                        //        return false;
+                        //    }
+                        //}
+                    });
+                } else {
+                }
+            }
+        }
+
+        function submitForm() {
+            alert('This will process the login via Auth0');
+            return false;
+        }
+
+        async function validateEasyPayUser(sso, email) {
+            var apiUrl = "/api/v1/Authorization/ValidateEmail?SSO=" + validSso + "&email=" + email.toLowerCase();
+
+            await $.ajax({
+                url: apiUrl,
+                type: "POST",
+                success: function (data) {
+                    if (data) {
+                        console.log("Ajax return: ", data);
+                        return data;
+                    } else {
+                        return null;
+                    }
+                },
+                error: function (textStatus, errorThrown) {
+                    console.log("Something happened: ", errorThrown);
+                    return null;
+                },
+                complete: function () { }
+            });
+        }
+
+        function setTestData(email) {
+            switch (email.toUpperCase()) {
+                case "VALIDSSONOFOPS@TEST.COM":
+                    // EasyPay account with a valid Auth0 token
+                    validSso = true;
+                    localStorage.setItem("validAuth0Token", "true");
+                    localStorage.setItem("VALIDSSONOFOPS@TEST.COM", "{\"USER_NAME\": \"validssonofops@test.com\",\"firstName\": \"ValidSso\",\"lastName\": \"NoEasyPay\",\"companyId\": \"Fidelity National & Financial\",\"phoneNumber\": \"1234567890\",\"status\": \"VALID SSO, NO EasyPay\"}");
+                    break;
+                case "VALIDWITHOUTSSO@TEST.COM":
+                    // EasyPay account without a valid Auth0 token
+                    validSso = false;
+                    localStorage.setItem("validAuth0Token", "false");
+                    break;
+                case "INVALIDWITHSSO@TEST.COM":
+                    // No EasyPay account with a valid Auth0 token
+                    validSso = true;
+                    localStorage.setItem("validAuth0Token", "true");
+                    localStorage.setItem("INVALIDWITHSSO@TEST.COM", "{\"USER_NAME\": \"invalidwithsso@test.com\",\"firstName\": \"InvalidEasyPay\",\"lastName\": \"WithSso\",\"companyId\": \"Fidelity National & Financial\",\"phoneNumber\": \"1234567890\",\"status\": \"INVALID EasyPay WITH SSO\"}");
+                    break;
+                case "INVALIDWITHOUTSSO@TEST.COM":
+                    // No EasyPay account without a valid Auth0 token
+                    validSso = false;
+                    localStorage.setItem("validAuth0Token", "false");
+                    break;
+                default:
+                    break;
+            }
+        }
+    </script>
+}

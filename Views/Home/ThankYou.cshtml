@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "ThankYou";
+}
+<div class="wrapper">
+    <div class="main">
+        <div class="container">
+            <div class="section">
+                <div *ngIf="router.url == '/thankyou'">
+                    <div class="card-box m-t-20">
+                        <div class="text-center">
+                            <h5 class="text-uppercase font-bold m-b-0">Confirm Email for Registration</h5>
+                        </div>
+                        <div class="text-center">
+                            <img src="~/Images/mail_confirm.png" alt="img" class="thumb-lg m-t-20 center-block">
+                            <p class="text-muted font-13 m-t-20"> A email has been send to <b>@ViewBag.Email</b>. Please check for an email from EasyPay Approver and click on the included link to confirm your registration</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

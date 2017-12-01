@@ -1,0 +1,6 @@
+﻿<kendo-grid [data]="details" [pageSize]="10" [skip]="skip" [pageable]="true" [scrollable]="'none'" (pageChange)="pageChange($event)">
+    <kendo-grid-column field="InvoiceNbr" title="Invoice No."></kendo-grid-column>
+    <kendo-grid-column field="BillTo" title="Billed To"></kendo-grid-column>
+    <kendo-grid-column field="Amount" title="Amount" format="{0:c}"></kendo-grid-column>
+    <ng-template kendoPagerTemplate></ng-template>
+</kendo-grid>
