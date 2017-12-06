@@ -1,5 +1,7 @@
-﻿using netApi.Repositories.Authorization.Model;
+﻿using netApi.Repositories.Administration.Model;
+using netApi.Repositories.Authorization.Model;
 using System.Collections.Generic;
+using static netApi.Common.Helpers;
 
 namespace NetEasyPay.Interfaces
 {
@@ -8,7 +10,7 @@ namespace NetEasyPay.Interfaces
         List<APP_USER> GetUsers();
         APP_USER GetUser(long UserId);
         APP_USER GetUser(string username);
-        APP_USER AddUser(APP_USER newUser);
+        Response AddUser(EasyPayAuth0User newUser);
         APP_USER UpdateUser(APP_USER userToUpdate);
         APP_USER DeleteUser(long UserId);
         List<APP_ROLE> GetRoles();
@@ -27,6 +29,7 @@ namespace NetEasyPay.Interfaces
         ROLE_PERMISSION AddPermissionToRole(int RoleId, int PermissionId);
         USER_TOKEN SaveUserToken(long userId, long token);
         bool DeleteUserToken(long userId, long token);
+        List<USER_TOKEN> GetTokensByUser(long userId);
         object AssociateCRRARContactToUser(USER_CONTACT newUC);
         List<APP_USER> GetPendingUsers(string status);
     }

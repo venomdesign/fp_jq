@@ -9,23 +9,20 @@
             <div id="middle"></div>
             <div class="pull-right text-right" id="right" style="height: 40px;">
                 <span class="control-label pull-left" for="CreditCard">Export Format:</span>
-                <button class="btn btn-neutral k-button k-grid-pdf" kendogridpdfcommand="" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>
-                <button class="btn btn-neutral k-button k-grid-excel" kendogridexcelcommand="" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
+                <button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>
+                <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
             </div>
         </div>
         <div id="row" class="runningTotal">
             <div id="left" class="text-right text-nowrap" style="width: 400px; max-width: 400px;">
                 <span class="control-label pull-left" for="CreditCard">Credit Card #:</span>
                 <select class="form-control" name="CreditCard" style="width: 250px;">
-                    <option value="** 1234">My BofA Credit Card - ** 1234</option>
-                    <option value="** 4321">My Chase Checking Card - ** 4321</option>
-                    <option value="** 4334">Tom's Gold AmEx Card - ** 4334</option>
                 </select>
             </div>
 
             <div id="middle"></div>
             <div id="right" class="text-right mw-100">
-                Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $ <span class="invTotal"></span> <button class="btn btn-round" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
+                Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
             </div>
         </div>
     </div>
@@ -37,8 +34,8 @@
                         
     <div id="invoice_table" class="runningTotal total_bottom mw-100">
         <div id="row">
-            <div id="right" class="text-right" style="padding-right: 25px;">
-                Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $ <span class="invTotal"></span> <button class="btn btn-round" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
+            <div id="right" class="text-right mw-100">
+                Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
             </div>
         </div>
     </div>
@@ -74,8 +71,25 @@
         <script>
             var selectedCount = 0; $(".invCount").text(selectedCount);
             var selectedTotal = 0; $(".invTotal").text(selectedTotal);
+            $.ajax({
+                url: "/api/v1/Administration/GetTokensForUser?UserSysId=1008"
+            }).done(function (result) {
+                result = JSON.parse(result);
 
+                $.each(result, function () {
+                    //console.log(this.TOKEN);
+                    var len2 = this.TOKEN.toString().length;
+                    //console.log(len2);
+
+                    var lastFour = this.TOKEN.toString().slice(len2 - 4);
+
+                    $("select[name='CreditCard']")
+                        .append($('<option>', { "value": this.TOKEN.toString() })
+                            .text(this.NICKNAME.toString() + ": ****" + lastFour));
+                });
+            });
             $(document).ready(function () {
+            $(".selectedInvoice").prop("disabled", true);
                 $.ajax({
                     url: "/api/v1/Crrar/GetUnpaidInvoices?contactId=138098"
                 }).done(function (results) {
@@ -147,15 +161,50 @@
                         checkedRows[dataItem.id] = checked;
                         if (checked) {
                             //-select the row
+                           // $('.selectedInvoice').attr('disabled', false);
                             row.addClass("k-state-selected");
                             selectedCount += 1;
                             selectedTotal += dataItem.currentBalance;
+                            $(".selectedInvoice").prop("disabled", false);
                         } else {
                             //-remove selection
                             row.removeClass("k-state-selected");
                             selectedCount -= 1;
                             selectedTotal -= dataItem.currentBalance;
+                            
                         }
+
+
+/*var allChecked = true;
+$("input.checkbox").each(function(index, element){
+  if(!element.checked){
+    allChecked = false;
+    $(".selectedInvoice").prop("disabled", true);
+    return false;
+  } else {
+        $(".selectedInvoice").prop("disabled", false);
+  }
+});*/
+/*
+$("input.checkbox").change(function () {
+    $(this:checked).each(function() {
+      $(".selectedInvoice").prop("disabled", false);
+    })
+    $("input.checkbox").each(function() {
+        $(".selectedInvoice").prop("disabled", !this.checked);
+    })
+ })*/
+        /*$(".checkbox").each(function(){
+            $(this).change(function () {
+
+                if (this.checked.length === 0) {
+                    $(".selectedInvoice").prop("disabled", true);
+                } else {
+                    $(".selectedInvoice").prop("disabled", false);
+                }
+            }).change()
+        })*/
+
                         $(".invCount").text(selectedCount);
                         $(".invTotal").text(parseInt(selectedTotal));
                     }

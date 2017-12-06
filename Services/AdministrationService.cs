@@ -1,8 +1,10 @@
 ﻿using netApi.Repositories.Administration.Interfaces;
+using netApi.Repositories.Administration.Model;
 using netApi.Repositories.Administration.Repositories;
 using netApi.Repositories.Authorization.Model;
 using NetEasyPay.Interfaces;
 using System.Collections.Generic;
+using static netApi.Common.Helpers;
 
 namespace NetEasyPay.Services
 {
@@ -27,7 +29,7 @@ namespace NetEasyPay.Services
             return _repository.AddRoleToUser(urToAdd);
         }
 
-        public APP_USER AddUser(APP_USER newUser)
+        public Response AddUser(EasyPayAuth0User newUser)
         {
             return _repository.AddUser(newUser);
         }
@@ -130,6 +132,11 @@ namespace NetEasyPay.Services
         public bool DeleteUserToken(long userId, long token)
         {
             return _repository.DeleteUserToken(userId, token);
+        }
+
+        public List<USER_TOKEN> GetTokensByUser(long userId)
+        {
+            return _repository.GetTokensByUserId(userId);
         }
 
         public object AssociateCRRARContactToUser(USER_CONTACT newUC)

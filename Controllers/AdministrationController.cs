@@ -11,6 +11,8 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
 using System.Data.Entity.Validation;
+using System.Collections.Generic;
+using netApi.Repositories.Administration.Model;
 
 namespace NetEasyPay.Controllers
 {
@@ -132,21 +134,26 @@ namespace NetEasyPay.Controllers
         /// Add a new APP_USER to the FOPS database
         /// </summary>
         /// <param name="value">(string) JSON version of new APP_USER</param>
+        /// <param name="addAuth0">(bool) Indicates whether to add a new user to Auth0</param>
         /// <returns>HTTPResponse with JSON representation of new APP_USER object</returns>
         // TODO: [Authorize]
         [HttpPost]
         [Route("api/v{version:apiVersion}/Administration/AddUser")]
-        public object AddUser([FromBody] JToken value)
+        public object AddUser([FromBody] JToken value, bool addAuth0)
         {
-            APP_USER newUser = null;
+            EasyPayAuth0User newUser = null;
 
             try
             {
-                newUser = JsonConvert.DeserializeObject<APP_USER>(value.ToString());
+                newUser = JsonConvert.DeserializeObject<EasyPayAuth0User>(value.ToString());
+                if (addAuth0)
+                {
+                    newUser.AddToAuth0 = true;
+                }
 
                 string executingUser = "";
 
-                APP_USER result = _service.AddUser(newUser);
+                var result = _service.AddUser(newUser);
                 log.Info(string.Format("User {0} created New user with the following data: \n\n{1}", executingUser, value));
                 return Ok(result);
             }
@@ -800,7 +807,7 @@ namespace NetEasyPay.Controllers
                 return Conflict();
             }
 
-            var resp = AddUser(registration);
+            var resp = AddUser(registration, false);
 
             log.Info(string.Format("New registration created from new user: \n\n{0}", registration));
 
@@ -879,6 +886,28 @@ namespace NetEasyPay.Controllers
                 log.Error(e);
 
                 return BadRequest(msg);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v{version:apiVersion}/Administration/GetTokensForUser")]
+        public object GetTokensForUser(long UserSysId)
+        {
+            try
+            {
+                if (UserSysId == 0) { throw new Exception("User Id is required"); }
+
+                var tokens = _service.GetTokensByUser(UserSysId);
+
+                return JsonConvert.SerializeObject(tokens);
+
+            }
+            catch (Exception e)
+            {
+                //var msg = string.Format("CRRAR Contact/Attn association {1}/{2} failed.\n\nUserId:\n{0}.", UserSysID, ContactId, attnId);
+                log.Error(e);
+
+                throw new Exception(e.Message);
             }
         }
 

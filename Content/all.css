@@ -16892,7 +16892,7 @@ tr.k-detail-row > td.k-detail-cell > div > div.k-grid-header > div > table > the
 
 
 /**** Invoice and Payment history placement of number of invoices to show dropdown ***/
-.k-pager-sizes { position: absolute; top: 35px; left: 0; }
+.k-pager-sizes { position: absolute; top: -5px; left: 0; }
     .k-pager-sizes:before { content: "Show" }
     .k-pager-sizes.k-label:after { content: "" }
 

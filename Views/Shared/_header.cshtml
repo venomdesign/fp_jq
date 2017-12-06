@@ -1,7 +1,8 @@
 ﻿<nav class="navbar navbar-expand-lg fixed-top navbar-default" color-on-scroll="100">
+<!--nav class="navbar navbar-expand-lg fixed-top bg-danger" color-on-scroll="100"-->
     <div class="container">
         <div class="navbar-translate">
-            <a class="navbar-brand" href="/home/register?email=foo@bar.com">EasyPay - FNF<!-- <img src="~/Images/fnf_logo_trans.fw.png" title="EasyPay - Fidelity National Finance" style="width: 65%; height: auto;"> --></a>
+            @Html.ActionLink("EasyPay - FNF", "Index", "Home", null, new { @class = "navbar-brand" })
             <button aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-burger collapsed ml-auto" data-target="#navbarToggler" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-bar"></span>
                 <span class="navbar-toggler-bar"></span>

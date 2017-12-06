@@ -1,154 +1,14 @@
-﻿<style>
-    .form-horizontal .has-feedback .form-control-feedback { right: 20px; }
-    .has-error .form-control-feedback { color: #a94442; }
-    .form-control-feedback { position: absolute; top: 35px; z-index: 2; text-align: center; pointer-events: none; }
-</style>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-4 ml-auto mr-auto" id="registrationPreFlight">
-            <form id="pageForm" class="form-signin">
-                <h2 class="title">Registration</h2>
-                <div id="errorSummary" class="alert alert-danger" style="display: none;">
-                    <div id="errorMessage"></div>
-                </div>
-                <div class="form-group">
-                    <label for="preflightUsername">Enter your email address <span class="icon-danger">*</span></label>
-                    <input type="email" id="preflightUsername" maxlength="30" required class="form-control col-lg-12">
-                </div>
-                <input type="button" id="registrationPreFlightSubmit" class="btn btn-round" value="Submit">
-            </form>
-        </div>
-    </div>
-    <div id="registrationFormControl" class="row" style="display: none;">
-        <div class="col-md-8 ml-auto mr-auto">
-            <form id="registrationForm" method="post" class="form-horizontal" action="" novalidate>
-                <h2 class="title">Registration</h2>
-                <div class="row">
-                    <div class="form-group col-sm-12">
-                        <label class="control-label" for="userName">Email Address <span class="icon-danger">*</span></label>
-                        <div class="errorCheck">
-                            <input id="userName" type="email" class="form-control" maxlength="50" required pattern="[a-z0-9._%+-]+\u0040[a-z0-9.-]+\.[a-z]{2,3}$" data-email-msg="Email format is not valid" name="userName" />
-                            <input id="hid_username" type="hidden" value="" />
-                        </div>
-                    </div>
-                </div>
-                <div id="passwordRow" class="row" style="display: none;">
-                    <div class="form-group col-sm-6">
-                        <label class=" control-label" for="password">Password</label>
-                        <div class="errorCheck">
-                            <input type="password" class="form-control" id="password" maxlength="50" name="password">
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-6">
-                        <label class="control-label" for="confirmPassword">Confirm password</label>
-                        <div class="errorCheck">
-                            <input type="password" class="form-control" id="confirmPassword" maxlength="50" name="confirmPassword">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-6">
-                        <label class="control-label" for="firstName">First name <span class="icon-danger">*</span></label>
-                        <div class="errorCheck">
-                            <input type="text" class="form-control" id="firstName" maxlength="50" name="firstName">
-                        </div>
-                        <input type="hidden" id="hid_firstName" />
-                    </div>
-                    <div class="form-group col-sm-6">
-                        <label class="control-label" for="lastName">Last name <span class="icon-danger">*</span></label>
-                        <div class="errorCheck">
-                            <input type="text" class="form-control" id="lastName" maxlength="50" name="lastName">
-                        </div>
-                        <input type="hidden" id="hid_lastName" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-12">
-                        <label class="control-label" for="companyId">Company Name <span class="icon-danger">*</span></label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="companyId" name="companyId" maxlength="50"></div>
-                        <input type="hidden" id="hid_companyId" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-6">
-                        <label class="control-label" for="phoneNumber">Phone Number <span class="icon-danger">*</span></label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" maxlength="16"></div>
-                        <input type="hidden" id="hid_phoneNumber" />
-                    </div>
-                    <div class="form-group col-sm-6">
-                        <label class="control-label" for="phoneExtension">Ext </label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="phoneExtension" name="phoneExtension" maxlength="10"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-6">
-                        <label class="control-label" for="mobileNumber">Mobile Number </label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="mobileNumber" name="mobileNumber" maxlength="16"></div>
-                    </div>
-                    <div class="form-group col-sm-6"></div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-6">
-                        <label for="timezone" class="control-label">Time Zone <span class="icon-danger">*</span></label>
-                        <div class="errorCheck">
-                            <select class="form-control" id="timezone" name="timezone" required>
-                                <option value="">---Please Choose---</option>
-                                <option value="AST">AST</option>
-                                <option value="EST">EST</option>
-                                <option value="CST">CST</option>
-                                <option value="MST">MST</option>
-                                <option value="PST">PST</option>
-                                <option value="AKST">AKST</option>
-                                <option value="HST">HST</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-6"></div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-12">
-                        <label for="commentsAgents" class="control-label">Comments/Additional Info</label>
-                        <textarea class="form-control" id="commentsAgents" name="commentsAgents" rows="3" maxlength="4000" placeholder="Please add your associations you would like the approver to verify"></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-12">
-                        <label class="control-label">Enable Multi-Factor Authentication</label>
-                        <div class="form-check-radio">
-                            <label class="form-check-label">
-                                <input class="form-check-input" id="mFaEnabled" name="mFaEnabled[]" type="radio" value="true"> Yes
-                                <span class="form-check-sign"></span>
-                            </label>
-                        </div>
-                        <div class="form-check-radio">
-                            <label class="form-check-label">
-                                <input class="form-check-input" id="mFaEnabled" name="mFaEnabled[]" type="radio" value="false" checked> No
-                                <span class="form-check-sign"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group pull-right">
-                        <input type="button" class="btn btn-primary" id="registerUser" value="Register">
-                        <input type="reset" class="btn btn-info" id="resetform">
-                        <a href="/home/login" class="btn btn-default">Cancel</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
-@section scripts{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
-    <script src="~/Scripts/jquery.validate.js"></script>
-}
-@section pageScripts{
-    <script type="text/javascript">
+       $.validator.setDefaults({
+            submitHandler: function (form) {
+                if($(form).valid()) {
+                    $(form).ajaxSubmit();
+                }
+            }
+        });
+
         var validator = $("#registrationForm"),
         status = $(".status");
-
         
         $.validator.addMethod("accept", function (value, element, param) {
             return value.match(new RegExp("^" + param + "$"));
@@ -158,31 +18,27 @@
         $(document).ready(function () {
 
             /*$('#mFaEnabled').change(function(){
-              
-                    if ($('#mFaEnabled[value="true"]:checked')) {
+                $(this).validate({
+                    if ($('#mFaEnabled[value="Yes"]:checked')) {
                         alert("Yes");
-                        $('#mobileNumber').attr('required');
-                        mobileNumber: "required"
+                        $('#MOBILE_NUMBER').attr('required');
+                        MOBILE_NUMBER: "required"
                     } else {
-                        $('#mobileNumber').removeAttr('required');
-                        mobileNumber: ""
+                        $('#MOBILE_NUMBER').removeAttr('required');
+                        MOBILE_NUMBER: ""
                     }
-             
+                });
             });*/
 
             $("#registrationPreFlightSubmit").on("click",
-                function() {
+                function () {
                     registrationPreFlightSubmit();
                 }
             );
 
             $("#registerUser").on("click",
-                function() {
-                    if(validator.valid()) {
-                        registerUser();
-                    } else {
-                        //alert("NO SOUP FOR YOU!");
-                    }
+                function () {
+                    registerUser();
                 }
             );
 
@@ -191,20 +47,11 @@
             $("#mobileNumber").mask("(999) 999-9999");
             $("#phoneExtension").mask("9999999999");                    
                         
-            $('#commentsAgents').bind('copy', function (e) { e.preventDefault(); return false; });
+             $('#commentsAgents').bind('copy', function (e) { e.preventDefault(); return false; });
             $('#commentsAgents').bind('paste', function (e) { e.preventDefault(); return false; });
-            /*$("#resetForm").click(function(){
-                $("input").each(function(){
-                    if($(this).is('[readonly]') == false && $(this).prop('disabled',false)){
-                        $(this).val(null);
-                    }
-                });
-            });*/
         }); //END DOC READY
 
-
-        /***** PREFLIGHT SUBMIT *****/ 
-        function registrationPreFlightSubmit() { 
+        function registrationPreFlightSubmit() {
             console.log("Registration preflight fired.");
 
             // clear the preflight error box
@@ -216,10 +63,6 @@
             // Validate the email address being entered.
             validateEasyPayUser(true, $("#preflightUsername").val());
         };
-        /***** END PREFLIGHT SUBMIT *****/ 
-
-
-        /***** REGISTER USER *****/ 
         function registerUser() {
             console.log("registerUser fired");
             validator.validate();
@@ -244,6 +87,26 @@
             };
 
             console.log("User to register: ", user);
+
+
+            var user = {
+                "UserSysId": "0",
+                "EmailAddress": $("#userName").val(),
+                "Password": $("#password").val(),
+                "FirstName": $("#firstName").val(),
+                "LastName": $("#lastName").val(),
+                "CompanyId": $("#companyId").val(),
+                "PhoneNumber": $("#phoneNumber").val(),
+                "PhoneExtension": $("#phoneExtension").val(),
+                "MobileNumber": $("#mobileNumber").val(),
+                "Timezone": $("#timezone").val(),
+                "IsLocked": "0",
+                "IsActive": "0",
+                "Notes": $("#commentsAgents").val(),
+                "UserGuid": "",
+                "MfaEnabled[]": $("#mFaEnabled:checked").val(),
+                "MfaPhoneNumber": $("#mobileNumber").val()
+            };
 
             var endpointUrl = "";
             if (localStorage.getItem("CreateAuth0Record")) {
@@ -270,12 +133,7 @@
                 }
             });
         };
-        /***** END REGISTER USER *****/ 
 
-
-
-
-        /***** VALIDATE EASYPAY USER *****/ 
         function validateEasyPayUser(sso, email) {
             var apiUrl = "/api/v1/Authorization/ValidateEmail?SSO=true&email=" + email.toLowerCase();
 
@@ -336,24 +194,23 @@
                 complete: function () { }
             });
         }
-       /***** END VALIDATE EASYPAY USER *****/ 
 
 
-            /*** FORM VALIDATION RULES ***/
-            validator.validate({
+        validator.validate({
                 rules: {
                     userName: {
                         required: true,
                         email: true,
                         minlength: 1,
                         maxlength: 50,
-                        accept: '[-0-9a-zA-Z.+_]+@@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}'
+                        accept: '/^[a-z0-9._%+-]+\u0040[a-z0-9.-]+\.[a-z]{2,3}$'
                     },
                     firstName: {
                         required: true,
                         minlength: 1,
                         maxlength: 50,
                         accept: '[a-zA-Z]*'
+                        }
                     },
                     lastName: {
                         required: true,
@@ -364,15 +221,15 @@
                     password: {
                         required: true,
                         minlength: 1,
-                        maxlength: 50/*,
-                        accept : /^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/*/
+                        maxlength: 50,
+                        accept: '/^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/'
                     },
                     confirmPassword: {
                         required: true,
                         minlength: 1,
                         maxlength: 50,
                         equalTo: "#password",
-                        /*accept : /^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/*/
+                        accept: '/^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/'
                     },
                     timezone: {
                         required: true,
@@ -397,63 +254,28 @@
                     mobileNumber: {
                         minlength: 9,
                         maxlength: 16,
-                        required: function () {
-                            return $('#mFaEnabled[value="true"]:checked').length > 0;
-                        }
-
-
-                         /*    depends: function (element) {
-                                if ($('#mFaEnabled[value="true"]:checked')) {
-                                    return true;
-                                } else {
-                                    $('#mobileNumber').attr('required');
-                                    return false;
-                                }
-                            }
-                        },
-                        
-                       
-                        required: function(element) {
-                            //return $('#mFaEnabled[value="Yes"]:checked')
-                            if($('#mFaEnabled:checked').val() === 'Yes'){
-                                return true;
-                            } else {
-                                $('#mobileNumber').removeAttr('required');
-                                return false;
-                            }
-                        }*/
-                    }
-
-
-
-
-                   /* mobileNumber: {
-                        minlength: 9,
-                        maxlength: 16,
                         required: {
-                            
                             depends: function (element) {
                                 if ($('#mFaEnabled:checked').val() === 'true') {
                                     return true;
-                                    alert("Yes")
                                 } else {
                                     return false;
                                 }
                             }
                         },
                         accept: '[0-9]*'
-                        
+                        /*
                         required: function(element) {
                             //return $('#mFaEnabled[value="Yes"]:checked')
-                            if($('#mFaEnabled:checked').val() === 'true'){
+                            if($('#mFaEnabled:checked').val() === 'Yes'){
                                 $('#MOBILE_NUMBER').attr('required');
                                 return true;
                             } else {
                                 $('#MOBILE_NUMBER').removeAttr('required');
                                 return false;
                             }
-                        }
-                    }*/
+                        }*/
+                    }
                 },
                 messages: {
                     firstName: {
@@ -537,6 +359,10 @@
                     });  
                 }*/
             });
-            /*** END FORM VALIDATION RULES ***/
-    </script>
-}
+            $("#resetForm").click(function(){
+                $("input").each(function(){
+                    if($(this).is('[readonly]') == false && $(this).prop('disabled',false)){
+                        $(this).val(null);
+                    }
+                });
+            });

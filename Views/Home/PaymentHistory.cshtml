@@ -9,8 +9,8 @@
             <div id="middle"></div>
             <div class="pull-right text-right" id="right" style="height: 40px;">
                 <span class="control-label pull-left" for="CreditCard">Export Format:</span>
-                <button class="btn btn-neutral k-button k-grid-pdf" kendogridpdfcommand="" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>
-                <button class="btn btn-neutral k-button k-grid-excel" kendogridexcelcommand="" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
+                <button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>
+                <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
             </div>
         </div>
     </div>
@@ -82,7 +82,7 @@
                                 columns: [
                                     { field: "invoiceNbr", title: "Invoice Number" },
                                     { field: "billTo", title: "Contact Name" },
-                                    { field: "amount", title: "Amount" }
+                                    { field: "amount", title: "Amount", format: "{0:c}" }
                                 ],
                                  dataBound: function(){
                                     $("#invoiceGrid > div.k-grid-content.k-auto-scrollable > table > tbody > tr.k-detail-row > td.k-detail-cell > div > div.k-grid-header").removeAttr("style");

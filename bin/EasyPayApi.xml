@@ -20,11 +20,12 @@
             <param name="APP_ID"></param>
             <returns></returns>
         </member>
-        <member name="M:NetEasyPay.Controllers.AdministrationController.AddUser(Newtonsoft.Json.Linq.JToken)">
+        <member name="M:NetEasyPay.Controllers.AdministrationController.AddUser(Newtonsoft.Json.Linq.JToken,System.Boolean)">
             <summary>
             Add a new APP_USER to the FOPS database
             </summary>
             <param name="value">(string) JSON version of new APP_USER</param>
+            <param name="addAuth0">(bool) Indicates whether to add a new user to Auth0</param>
             <returns>HTTPResponse with JSON representation of new APP_USER object</returns>
         </member>
         <member name="M:NetEasyPay.Controllers.AdministrationController.AddPermission(System.String)">

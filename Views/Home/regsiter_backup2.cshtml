@@ -1,7 +1,19 @@
-﻿<style>
-    .form-horizontal .has-feedback .form-control-feedback { right: 20px; }
-    .has-error .form-control-feedback { color: #a94442; }
-    .form-control-feedback { position: absolute; top: 35px; z-index: 2; text-align: center; pointer-events: none; }
+<style>
+    .form-horizontal .has-feedback .form-control-feedback {
+        right: 20px;
+    }
+
+    .has-error .form-control-feedback {
+        color: #a94442;
+    }
+
+    .form-control-feedback {
+        position: absolute;
+        top: 35px;
+        z-index: 2;
+        text-align: center;
+        pointer-events: none;
+    }
 </style>
 <div class="container">
     <div class="row">
@@ -20,14 +32,14 @@
         </div>
     </div>
     <div id="registrationFormControl" class="row" style="display: none;">
-        <div class="col-md-8 ml-auto mr-auto">
+        <div class="col-sm-12 ml-auto mr-auto">
             <form id="registrationForm" method="post" class="form-horizontal" action="" novalidate>
                 <h2 class="title">Registration</h2>
                 <div class="row">
                     <div class="form-group col-sm-12">
                         <label class="control-label" for="userName">Email Address <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <input id="userName" type="email" class="form-control" maxlength="50" required pattern="[a-z0-9._%+-]+\u0040[a-z0-9.-]+\.[a-z]{2,3}$" data-email-msg="Email format is not valid" name="userName" />
+                            <input id="userName" type="email" class="form-control" required pattern="[a-z0-9._%+-]+\u0040[a-z0-9.-]+\.[a-z]{2,3}$" data-email-msg="Email format is not valid" />
                             <input id="hid_username" type="hidden" value="" />
                         </div>
                     </div>
@@ -36,13 +48,13 @@
                     <div class="form-group col-sm-6">
                         <label class=" control-label" for="password">Password</label>
                         <div class="errorCheck">
-                            <input type="password" class="form-control" id="password" maxlength="50" name="password">
+                            <input type="password" class="form-control" id="password">
                         </div>
                     </div>
                     <div class="form-group col-sm-6">
                         <label class="control-label" for="confirmPassword">Confirm password</label>
                         <div class="errorCheck">
-                            <input type="password" class="form-control" id="confirmPassword" maxlength="50" name="confirmPassword">
+                            <input type="password" class="form-control" id="confirmPassword">
                         </div>
                     </div>
                 </div>
@@ -50,40 +62,36 @@
                     <div class="form-group col-sm-6">
                         <label class="control-label" for="firstName">First name <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <input type="text" class="form-control" id="firstName" maxlength="50" name="firstName">
+                            <input type="text" class="form-control" id="firstName">
                         </div>
-                        <input type="hidden" id="hid_firstName" />
                     </div>
                     <div class="form-group col-sm-6">
                         <label class="control-label" for="lastName">Last name <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <input type="text" class="form-control" id="lastName" maxlength="50" name="lastName">
+                            <input type="text" class="form-control" id="lastName">
                         </div>
-                        <input type="hidden" id="hid_lastName" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-12">
                         <label class="control-label" for="companyId">Company Name <span class="icon-danger">*</span></label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="companyId" name="companyId" maxlength="50"></div>
-                        <input type="hidden" id="hid_companyId" />
+                        <div class="errorCheck"><input type="text" class="form-control" id="companyId"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="control-label" for="phoneNumber">Phone Number <span class="icon-danger">*</span></label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" maxlength="16"></div>
-                        <input type="hidden" id="hid_phoneNumber" />
+                        <div class="errorCheck"><input type="text" class="form-control" id="phoneNumber"></div>
                     </div>
                     <div class="form-group col-sm-6">
                         <label class="control-label" for="phoneExtension">Ext </label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="phoneExtension" name="phoneExtension" maxlength="10"></div>
+                        <div class="errorCheck"><input type="text" class="form-control" id="phoneExtension"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="control-label" for="mobileNumber">Mobile Number </label>
-                        <div class="errorCheck"><input type="text" class="form-control" id="mobileNumber" name="mobileNumber" maxlength="16"></div>
+                        <div class="errorCheck"><input type="text" class="form-control" id="mobileNumber"></div>
                     </div>
                     <div class="form-group col-sm-6"></div>
                 </div>
@@ -91,7 +99,7 @@
                     <div class="form-group col-sm-6">
                         <label for="timezone" class="control-label">Time Zone <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <select class="form-control" id="timezone" name="timezone" required>
+                            <select class="form-control" id="timezone" required>
                                 <option value="">---Please Choose---</option>
                                 <option value="AST">AST</option>
                                 <option value="EST">EST</option>
@@ -108,7 +116,7 @@
                 <div class="row">
                     <div class="form-group col-sm-12">
                         <label for="commentsAgents" class="control-label">Comments/Additional Info</label>
-                        <textarea class="form-control" id="commentsAgents" name="commentsAgents" rows="3" maxlength="4000" placeholder="Please add your associations you would like the approver to verify"></textarea>
+                        <textarea class="form-control" id="commentsAgents" rows="3" maxlength="4000" placeholder="Please add your associations you would like the approver to verify"></textarea>
                     </div>
                 </div>
                 <div class="row">
@@ -131,7 +139,7 @@
                 <div class="row">
                     <div class="form-group pull-right">
                         <input type="button" class="btn btn-primary" id="registerUser" value="Register">
-                        <input type="reset" class="btn btn-info" id="resetform">
+                        <input type="reset" class="btn btn-info">
                         <a href="/home/login" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
@@ -146,202 +154,62 @@
 }
 @section pageScripts{
     <script type="text/javascript">
-        var validator = $("#registrationForm"),
-        status = $(".status");
+        $.validator.setDefaults({
+            submitHandler: function (form) {
+                
+                    $(form).ajaxSubmit();
+             
+            }
+        });
 
-        
         $.validator.addMethod("accept", function (value, element, param) {
             return value.match(new RegExp("^" + param + "$"));
-        }, 'please enter a valid set of characters');
-
-
-        $(document).ready(function () {
-
+        },'please enter a valid email');
+        
+        $(document).ready(function(){
+            
             /*$('#mFaEnabled').change(function(){
-              
-                    if ($('#mFaEnabled[value="true"]:checked')) {
+                $(this).validate({
+                    if ($('#mFaEnabled[value="Yes"]:checked')) {
                         alert("Yes");
-                        $('#mobileNumber').attr('required');
-                        mobileNumber: "required"
+                        $('#MOBILE_NUMBER').attr('required');
+                        MOBILE_NUMBER: "required"
                     } else {
-                        $('#mobileNumber').removeAttr('required');
-                        mobileNumber: ""
+                        $('#MOBILE_NUMBER').removeAttr('required');
+                        MOBILE_NUMBER: ""
                     }
-             
+                });
             });*/
 
             $("#registrationPreFlightSubmit").on("click",
-                function() {
+                function () {
                     registrationPreFlightSubmit();
                 }
             );
 
             $("#registerUser").on("click",
-                function() {
-                    if(validator.valid()) {
-                        registerUser();
-                    } else {
-                        //alert("NO SOUP FOR YOU!");
-                    }
+                function () {
+                    registerUser();
                 }
             );
 
             // set up the masking for the phone and mobile
             $("#phoneNumber").mask("(999) 999-9999");
             $("#mobileNumber").mask("(999) 999-9999");
-            $("#phoneExtension").mask("9999999999");                    
-                        
-            $('#commentsAgents').bind('copy', function (e) { e.preventDefault(); return false; });
-            $('#commentsAgents').bind('paste', function (e) { e.preventDefault(); return false; });
-            /*$("#resetForm").click(function(){
-                $("input").each(function(){
-                    if($(this).is('[readonly]') == false && $(this).prop('disabled',false)){
-                        $(this).val(null);
-                    }
-                });
-            });*/
-        }); //END DOC READY
+            $("#phoneExtension").mask("9999999999");
+        });
 
-
-        /***** PREFLIGHT SUBMIT *****/ 
-        function registrationPreFlightSubmit() { 
+        function registrationPreFlightSubmit() {
             console.log("Registration preflight fired.");
-
-            // clear the preflight error box
-            //if ($("#errorSummary:visible")) {
-            //    $("#errorMessage").html('');
-            //    $("#errorSummary").toggle();
-            //}
-
             // Validate the email address being entered.
             validateEasyPayUser(true, $("#preflightUsername").val());
         };
-        /***** END PREFLIGHT SUBMIT *****/ 
+        var validator = $("#registrationForm"),
+            status = $(".status");
 
-
-        /***** REGISTER USER *****/ 
         function registerUser() {
-            console.log("registerUser fired");
-            validator.validate();
-
-            var user = {
-                "UserSysId": "0",
-                "EmailAddress": $("#userName").val(),
-                "Password": $("#password").val(),
-                "FirstName": $("#firstName").val(),
-                "LastName": $("#lastName").val(),
-                "CompanyId": $("#companyId").val(),
-                "PhoneNumber": $("#phoneNumber").val().replace(/\D/g, ''),
-                "PhoneExtension": $("#phoneExtension").val().replace(/\D/g, ''),
-                "MobileNumber": $("#mobileNumber").val().replace(/\D/g, ''),
-                "Timezone": $("#timezone").val(),
-                "IsLocked": "0",
-                "IsActive": "0",
-                "Notes": $("#commentsAgents").val(),
-                "UserGuid": "",
-                "MfaEnabled[]": $("#mFaEnabled:checked").val(),
-                "MfaPhoneNumber": $("#mobileNumber").val()
-            };
-
-            console.log("User to register: ", user);
-
-            var endpointUrl = "";
-            if (localStorage.getItem("CreateAuth0Record")) {
-                localStorage.removeItem("CreateAuth0Record")
-                endpointUrl = "/api/v1/Administration/AddUser?addAuth0=true";
-            } else {
-                endpointUrl = "/api/v1/Administration/AddUser?addAuth0=false";
-            }
-
-            $.ajax({
-                type: "POST",
-                accepts: "application/json",
-                contentType: 'application/json',
-                url: endpointUrl,
-                data: JSON.stringify(user),
-                success: function (user) {
-                    var serverResponse = JSON.parse(user.results);
-                    window.location.href = "/home/index?emailAddress=" + serverResponse.USER_NAME;
-                },
-                error: function (errorMsg) {
-                    console.log("Something broke: ", errorMsg);
-                },
-                complete: function () {
-                }
-            });
-        };
-        /***** END REGISTER USER *****/ 
-
-
-
-
-        /***** VALIDATE EASYPAY USER *****/ 
-        function validateEasyPayUser(sso, email) {
-            var apiUrl = "/api/v1/Authorization/ValidateEmail?SSO=true&email=" + email.toLowerCase();
-
-            $.ajax({
-                url: apiUrl,
-                type: "POST",
-                success: function (data) {
-                    if (data) {
-                        console.log("Server response: ", data);
-                        var serverResponse = JSON.parse(data.results);
-
-                        if (typeof serverResponse.isInternal !== "undefined") {
-                            if (serverResponse.isInternal) {
-                                $("#errorMessage").html("Please contact the helpdesk at XXX-XXX-XXXX for assistance with access using an Internal email address.");
-                                $("#errorSummary").show();
-                            }
-                        } else if (typeof serverResponse.Auth0Blocked !== "undefined") {
-                            var errorMsg = "no particular reason";
-                            if (serverResponse.Reason !== '') {
-                                errorMsg = serverResponse.Reason;
-                            }
-                            $("#errorMessage").html("This account has been blocked due to " + errorMsg + ". Please contact the helpdesk at XXX-XXX-XXXX for assistance.");
-                            $("#errorSummary").show();
-                        } else if (typeof serverResponse.auth0Id !== "undefined") {
-                            $("#registrationPreFlight").hide();
-                            $("#registrationFormControl").show();
-                            $("#userName").val(serverResponse.emailAddress).attr("disabled", "disabled");
-                            $("#hid_userName").val(serverResponse.emailAddress);
-                            $("#firstName").val(serverResponse.firstName).attr("disabled", "disabled");
-                            $("#hid_firstName").val(serverResponse.firstName);
-                            $("#lastName").val(serverResponse.lastName).attr("disabled", "disabled");
-                            $("#hid_lastName").val(serverResponse.lastName);
-                            $("#companyId").val(serverResponse.companyName).attr("disabled", "disabled");
-                            $("#hid_companyId").val(serverResponse.companyName);
-                            var sanitizedPhone = serverResponse.phoneNumber.replace(/\D/g, '');
-                            $("#phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length)).mask("(999) 999-9999").attr("disabled", "disabled");
-                            $("#hid_phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length));
-                        } else {
-                            // They exist in both Auth0 and EasyPay...but they're not logged in.
-                            window.location.href = "/home/index?emailAddress=" + email;
-                        }
-                    } else {
-                        // Show everything...records will need to be added to both systems.
-                        console.log("No existing user record found in either Auth0 or EasyPay");
-                        $("#registrationPreFlight").hide();
-                        $("#passwordRow").show();
-                        $("#registrationFormControl").show();
-                        $("#userName").val($("#preflightUsername").val());
-                        $("#userName").attr("disabled", "disabled");
-                        $("#hid_userName").val($("#preflightUsername").val());
-                        localStorage.setItem("CreateAuth0Record", "true");
-                    }
-                },
-                error: function (textStatus, errorThrown) {
-                    console.log("Something happened: ", errorThrown);
-                    return null;
-                },
-                complete: function () { }
-            });
-        }
-       /***** END VALIDATE EASYPAY USER *****/ 
-
-
-            /*** FORM VALIDATION RULES ***/
             validator.validate({
-                rules: {
+                            rules: {
                     userName: {
                         required: true,
                         email: true,
@@ -364,15 +232,13 @@
                     password: {
                         required: true,
                         minlength: 1,
-                        maxlength: 50/*,
-                        accept : /^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/*/
+                        maxlength: 50
                     },
                     confirmPassword: {
                         required: true,
                         minlength: 1,
                         maxlength: 50,
-                        equalTo: "#password",
-                        /*accept : /^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/*/
+                        equalTo: "#PASSWORD"
                     },
                     timezone: {
                         required: true,
@@ -386,74 +252,37 @@
                     },
                     phoneNumber: {
                         required: true,
-                        minlength: 9,
+                        minlength: 1,
                         maxlength: 16
                     },
                     phoneExtension: {
-                        required: false,
-                        maxlength: 10,
-                        accept: '[0-9]*'
+                        maxlength: 10
                     },
                     mobileNumber: {
-                        minlength: 9,
-                        maxlength: 16,
-                        required: function () {
-                            return $('#mFaEnabled[value="true"]:checked').length > 0;
-                        }
-
-
-                         /*    depends: function (element) {
-                                if ($('#mFaEnabled[value="true"]:checked')) {
-                                    return true;
-                                } else {
-                                    $('#mobileNumber').attr('required');
-                                    return false;
-                                }
-                            }
-                        },
-                        
-                       
-                        required: function(element) {
-                            //return $('#mFaEnabled[value="Yes"]:checked')
-                            if($('#mFaEnabled:checked').val() === 'Yes'){
-                                return true;
-                            } else {
-                                $('#mobileNumber').removeAttr('required');
-                                return false;
-                            }
-                        }*/
-                    }
-
-
-
-
-                   /* mobileNumber: {
-                        minlength: 9,
+                        minlength: 1,
                         maxlength: 16,
                         required: {
-                            
                             depends: function (element) {
                                 if ($('#mFaEnabled:checked').val() === 'true') {
                                     return true;
-                                    alert("Yes")
                                 } else {
                                     return false;
                                 }
                             }
-                        },
-                        accept: '[0-9]*'
-                        
+                        }
+                        /*
                         required: function(element) {
                             //return $('#mFaEnabled[value="Yes"]:checked')
-                            if($('#mFaEnabled:checked').val() === 'true'){
+                            if($('#mFaEnabled:checked').val() === 'Yes'){
                                 $('#MOBILE_NUMBER').attr('required');
                                 return true;
                             } else {
                                 $('#MOBILE_NUMBER').removeAttr('required');
                                 return false;
                             }
-                        }
-                    }*/
+                        }*/
+                    }
+                    /*, agree1: "required"*/
                 },
                 messages: {
                     firstName: {
@@ -527,16 +356,82 @@
                 unhighlight: function (element, errorClass, validClass) {
                     $(element).parents(".errorCheck").addClass("has-success").removeClass("has-danger");
                     $(element).next("span").addClass("fa-check").removeClass("fa-times");
-                }/*,
-
-                submitHandler: function(form) {
-                    $.ajax({
-                        success: function(response) {
-                            alert("submitted!");
-                        }            
-                    });  
-                }*/
+                }
             });
-            /*** END FORM VALIDATION RULES ***/
+
+            var user = {
+                "UserSysId": "0",
+                "EmailAddress": $("#userName").val(),
+                "Password": $("#password").val(),
+                "FirstName": $("#firstName").val(),
+                "LastName": $("#lastName").val(),
+                "CompanyId": $("#companyId").val(),
+                "PhoneNumber": $("#phoneNumber").val(),
+                "PhoneExtension": $("#phoneExtension").val(),
+                "MobileNumber": $("#mobileNumber").val(),
+                "Timezone": $("#timezone").val(),
+                "IsLocked": "0",
+                "IsActive": "0",
+                "Notes": $("#commentsAgents").val(),
+                "UserGuid": "",
+                "MfaEnabled[]": $("#mFaEnabled:checked").val(),
+                "MfaPhoneNumber": $("#mobileNumber").val()
+            };
+
+           
+            $('#commentsAgents').bind('copy', function (e) { e.preventDefault(); return false; });
+            $('#commentsAgents').bind('paste', function (e) { e.preventDefault(); return false; });
+
+            var endpointUrl = "";
+            if (localStorage.getItem("CreateAuth0Record")) {
+                localStorage.removeItem("CreateAuth0Record")
+                endpointUrl = "/api/v1/Administration/AddUser?addAuth0=true";
+            } else {
+                endpointUrl = "/api/v1/Administration/AddUser";
+            }
+
+            $.ajax({
+                type: "POST",
+                accepts: "application/json",
+                contentType: 'application/json',
+                url: endpointUrl,
+                data: JSON.stringify(user),
+                success: function (user) {
+                    console.log("New user created: ", user);
+                },
+                error: function (errorMsg) {
+                    console.log("Something broke: ", errorMsg);
+                },
+                complete: function () {
+                    console.log("I'm done.");
+                }
+            });
+        };
+
+        function validateEasyPayUser(sso, email) {
+            var apiUrl = "/api/v1/Authorization/ValidateEmail?SSO=true&email=" + email.toLowerCase();
+
+            $.ajax({
+                url: apiUrl,
+                type: "POST",
+                success: function (data) {
+                    if (data) {
+                        window.location.href = "/home/index?emailAddress=" + email;
+                    } else {
+                        // Show everything...records will need to be added to both systems.
+                        console.log("No existing user record found in either Auth0 or EasyPay");
+                        $("#registrationPreFlight").hide();
+                        $("#passwordRow").show();
+                        $("#registrationFormControl").show();
+                        localStorage.setItem("CreateAuth0Record", "true");
+                    }
+                },
+                error: function (textStatus, errorThrown) {
+                    console.log("Something happened: ", errorThrown);
+                    return null;
+                },
+                complete: function () { }
+            });
+        }
     </script>
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Web.Http;
+using netApi.Repositories.Authorization.Model;
 using NetEasyPay.Interfaces;
 using NetEasyPay.Services;
 using Newtonsoft.Json;
@@ -79,87 +80,28 @@ namespace NetEasyPay.Controllers
         [Route("api/v{version:apiVersion}/Authorization/ValidateEmail")]
         public object ValidateEmail(bool SSO, string email)
         {
-            var emailUpper = email.ToUpper();
-
-            Response response = null;
-
-            if (SSO)
+            try
             {
-                switch (emailUpper)
-                {
-                    case "VALIDSSONOFOPS@TEST.COM":
-                        response = new Response
-                        {
-                            Success = true,
-                            RowCount = 1,
-                            ElapsedTime = 0,
-                            //Results = "VALID WITH SSO"
-                            Results = "{\"userName\": \"validssonofops@test.com\", \"firstName\": \"ValidSso\", \"lastName\": \"NoFops\", \"companyId\": \"Fidelity National & Financial\", \"status\": \"VALID SSO, NO FOPS\" }"
-                        };
-                        break;
-                    case "VALIDWITHOUTSSO@TEST.COM":
-                        response = new Response
-                        {
-                            Success = true,
-                            RowCount = 1,
-                            ElapsedTime = 0,
-                            Results = "VALID WITHOUT SSO"
-                        };
-                        break;
-                    case "INVALIDWITHSSO@TEST.COM":
-                        response = new Response
-                        {
-                            Success = true,
-                            RowCount = 1,
-                            ElapsedTime = 0,
-                            Results = "INVALID WITH SSO"
-                        };
-                        break;
-                    case "INVALIDWITHOUTSSO@TEST.COM":
-                        response = new Response
-                        {
-                            Success = true,
-                            RowCount = 1,
-                            ElapsedTime = 0,
-                            Results = "INVALID WITHOUT SSO"
-                        };
-                        break;
-                    //case "RIC.CASTAGNA@GMAIL.COM":
-                    //    response = new Response
-                    //    {
-                    //        Success = true,
-                    //        RowCount = 1,
-                    //        ElapsedTime = 0,
-                    //        Results = "FOPS USER NOT SIGNED IN"
-                    //    };
-                    //    break;
-                    default:
-                        if (emailUpper.Contains("@FNF.COM"))
-                        {
-                            response = new Response
-                            {
-                                Success = true,
-                                RowCount = 1,
-                                ElapsedTime = 0,
-                                Results = "INTERNAL EMAIL DETECTED"
-                            };
-                        }
-                        else
-                        {
-                            response = (Response)_service.ValidateEmail(email);
-                        }
-                        break;
-                }
+                return Ok((Response)_service.ValidateEmail(email.ToLower()));
             }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException.ToString());
+            }
+        }
 
-            return response;
+        [HttpPost]
+        [Route("api/v{version:apiVersion}/Authorization/AuthZeroCallback")]
+        public void Auth0Callback(object token)
+        {
+
         }
 
         [HttpGet]
         [Route("api/v{version:apiVersion}/Authorization/GetProfile")]
         public object GetProfile(string emailAddress)
         {
-            return new Profile() { FirstName = "Test", LastName = "User", CompanyName = "TestCo, Inc.", EmailAddress = emailAddress, MFAEnabled = true, MFAPhoneNumber = "888-555-1212", PhoneNumber = "800-555-1212", Password = "testtest", Status = "I have no idea what this field is for!" };
+            return new Auth0Profile() { firstName = "Test", lastName = "User", companyName = "TestCo, Inc.", emailAddress = emailAddress, mfaEnabled = true, mfaPhoneNumber = "8885551212", phoneNumber = "8005551212", password = "testtest" };
         }
 
         [HttpPost]
@@ -168,7 +110,7 @@ namespace NetEasyPay.Controllers
         {
             try
             {
-                var o = JsonConvert.DeserializeObject<Profile>(profile);
+                var o = JsonConvert.DeserializeObject<Auth0Profile>(profile);
                 return Ok();
             }
             catch (Exception e)
@@ -183,7 +125,7 @@ namespace NetEasyPay.Controllers
         {
             try
             {
-                var o = JsonConvert.DeserializeObject<Profile>(profile);
+                var o = JsonConvert.DeserializeObject<Auth0Profile>(profile);
                 return Ok();
             }
             catch (Exception e)
@@ -205,18 +147,5 @@ namespace NetEasyPay.Controllers
         {
             if (emailAddress != null && password != null) { return Ok(); } else { return NotFound(); }
         }
-    }
-
-    internal class Profile
-    {
-        public string EmailAddress { get; set; }
-        public string Password { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string CompanyName { get; set; }
-        public string PhoneNumber { get; set; }
-        public bool MFAEnabled { get; set; }
-        public string MFAPhoneNumber { get; set; }
-        public string Status { get; set; }
     }
 }

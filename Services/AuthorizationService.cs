@@ -33,7 +33,7 @@ namespace NetEasyPay.Services
 
         public object GetFnfAuthenticationServiceToken(string client_id, string client_secret)
         {
-            throw new System.NotImplementedException();
+            return _repository.GetFnfAuthenticationServiceToken(client_id, client_secret);
         }
     }
 }
