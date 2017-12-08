@@ -8,5 +8,6 @@ namespace NetEasyPay.Interfaces
         object GetClaims(System.Security.Principal.IPrincipal principal);
         object ValidateEmail(string email);
         object GetFnfAuthenticationServiceToken(string client_id, string client_secret);
+        object AuthenticateUser(string username, string password);
     }
 }

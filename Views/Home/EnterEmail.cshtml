@@ -1,0 +1,115 @@
+﻿@model NetEasyPay.Models.EnterEmailModel
+
+@{
+    ViewBag.Title = "Registration";
+}
+
+<h2>Registration</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" id="divEmailAddress">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmailAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Submit" class="btn btn-default" id="btnSubmit" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-horizontal" id="errorSummary" style="display: none;">
+        <div class="col-md-10 bg-warning" id="errorMessage"></div>
+    </div>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Please Wait</h4>
+            </div>
+            <div class="modal-body center-block">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $("#btnSubmit").click(function () {
+                validateEasyPayUser(true);
+            });
+        });
+
+        function validateEasyPayUser(sso) {
+            showPleaseWait(true);
+
+            var email = $("#EmailAddress").val();
+            var apiUrl = "/api/v1/Authorization/ValidateEmail?SSO=true&email=" + email.toLowerCase();
+
+            $.ajax({
+                url: apiUrl,
+                type: "POST",
+                success: function (data) {
+                    if (data) {
+                        console.log("Server response: ", data);
+                        var serverResponse = JSON.parse(data.results);
+
+                        // Is Internal Email?
+                        if (typeof serverResponse.isInternal !== "undefined") {
+                            if (serverResponse.isInternal) {
+                                $("#errorMessage").html("Please contact the helpdesk at XXX-XXX-XXXX for assistance with access using an Internal email address.");
+                                $("#errorSummary").show();
+                            }
+                        }
+                        else if (typeof serverResponse.Auth0Blocked !== "undefined") {
+                            $("#errorMessage").html("This account has been blocked. Please contact the helpdesk at XXX-XXX-XXXX for assistance.");
+                            $("#errorSummary").show();
+                        }
+                        else if (typeof serverResponse.auth0Id !== "undefined") {
+                            window.location = "/home/Register2/?email=" + serverResponse.emailAddress + "&hasSSO=true";
+                        }
+                        else {
+                            // They exist in both Auth0 and EasyPay...but they're not logged in.
+                            window.location.href = "/home/index?emailAddress=" + email;
+                        }
+                    } else {
+                        // Show everything...records will need to be added to both systems.
+                        console.log("No existing user record found in either Auth0 or EasyPay");
+
+                        window.location = "/home/Register2/?email=" + email;
+                    }
+                },
+                error: function (textStatus, errorThrown) {
+                    console.log("Something happened: ", errorThrown);
+                    return null;
+                },
+                complete: function () { showPleaseWait(false); }
+            });
+        }
+
+        function showPleaseWait(tgl) {
+            if (tgl == true)
+                $("#myModal").modal();
+            else
+                $("#myModal").modal("hide");
+        }
+    </script>
+}

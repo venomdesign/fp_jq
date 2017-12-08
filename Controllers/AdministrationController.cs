@@ -904,10 +904,52 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                //var msg = string.Format("CRRAR Contact/Attn association {1}/{2} failed.\n\nUserId:\n{0}.", UserSysID, ContactId, attnId);
                 log.Error(e);
 
                 throw new Exception(e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("api/v{version:apiVersion}/Administration/UpdateToken")]
+        public object UpdateToken(long tokenId, string nickname)
+        {
+            //We need to be able to change the Nickname on a token, so...
+            //try
+            //{
+            //    if (tokenId == 0) { throw new Exception("Token Id is required"); }
+
+            //    var tokens = _service.UpdateToken(tokenId, nickname);
+
+            //    return JsonConvert.SerializeObject(tokens);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    log.Error(e);
+
+            //    throw new Exception(e.Message);
+            //}
+
+            return null;
+        }
+
+        [HttpPost]
+        [Route("api/v{version:apiVersion}/Administration/ForgotPassword")]
+        public bool ForgotPassword(string emailAddress)
+        {
+            try { 
+                //What validation to I need to do on my side before I call Pradeep's service??
+                if (emailAddress.Length < 1) throw new Exception("Email address is required.");
+
+                var good = _service.ForgotPassword(emailAddress);
+
+                return good;
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                throw e;
             }
         }
 

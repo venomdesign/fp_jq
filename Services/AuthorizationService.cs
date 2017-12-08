@@ -35,5 +35,10 @@ namespace NetEasyPay.Services
         {
             return _repository.GetFnfAuthenticationServiceToken(client_id, client_secret);
         }
+
+        public object AuthenticateUser(string username, string password)
+        {
+            return _repository.AuthenticateUser(username, password);
+        }
     }
 }

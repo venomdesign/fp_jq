@@ -1,9 +1,4 @@
-﻿<style>
-    .form-horizontal .has-feedback .form-control-feedback { right: 20px; }
-    .has-error .form-control-feedback { color: #a94442; }
-    .form-control-feedback { position: absolute; top: 35px; z-index: 2; text-align: center; pointer-events: none; }
-</style>
-<div class="container">
+﻿<div class="container">
     <div class="row">
         <div class="col-sm-4 ml-auto mr-auto" id="registrationPreFlight">
             <form id="pageForm" class="form-signin">
@@ -14,6 +9,11 @@
                 <div class="form-group">
                     <label for="preflightUsername">Enter your email address <span class="icon-danger">*</span></label>
                     <input type="email" id="preflightUsername" maxlength="30" required class="form-control col-lg-12">
+                </div>
+                <!-- Show this group IF the user has an SSO account before showing them the page.  Make them prove that it's there SSO account. -->
+                <div class="form-group" id="PreFlightpassword" hidden="hidden">
+                    <label for="passwordField">Password  <span class="icon-danger">*</span></label>
+                    <input type="password" id="passwordField" class="form-control col-lg-12">
                 </div>
                 <input type="button" id="registrationPreFlightSubmit" class="btn btn-round" value="Submit">
             </form>
@@ -34,15 +34,15 @@
                 </div>
                 <div id="passwordRow" class="row" style="display: none;">
                     <div class="form-group col-sm-6">
-                        <label class=" control-label" for="password">Password</label>
+                        <label class=" control-label" for="password">Password <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <input type="password" class="form-control" id="password" maxlength="50" name="password">
+                            <input type="text" class="form-control" id="password" maxlength="50" name="password">
                         </div>
                     </div>
                     <div class="form-group col-sm-6">
-                        <label class="control-label" for="confirmPassword">Confirm password</label>
+                        <label class="control-label" for="confirmPassword">Confirm password <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <input type="password" class="form-control" id="confirmPassword" maxlength="50" name="confirmPassword">
+                            <input type="text" class="form-control" id="confirmPassword" maxlength="50" name="confirmPassword">
                         </div>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="control-label" for="mobileNumber">Mobile Number </label>
+                        <label class="control-label" for="mobileNumber">Mobile Number <span class="icon-danger">*</span></label>
                         <div class="errorCheck"><input type="text" class="form-control" id="mobileNumber" name="mobileNumber" maxlength="16"></div>
                     </div>
                     <div class="form-group col-sm-6"></div>
@@ -149,13 +149,11 @@
         var validator = $("#registrationForm"),
         status = $(".status");
 
-        
         $.validator.addMethod("accept", function (value, element, param) {
             return value.match(new RegExp("^" + param + "$"));
         }, 'please enter a valid set of characters');
 
-
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             /*$('#mFaEnabled').change(function(){
               
@@ -189,7 +187,7 @@
             // set up the masking for the phone and mobile
             $("#phoneNumber").mask("(999) 999-9999");
             $("#mobileNumber").mask("(999) 999-9999");
-            $("#phoneExtension").mask("9999999999");                    
+            //$("#phoneExtension").mask("9999999999");                    
                         
             $('#commentsAgents').bind('copy', function (e) { e.preventDefault(); return false; });
             $('#commentsAgents').bind('paste', function (e) { e.preventDefault(); return false; });
@@ -266,7 +264,7 @@
                 error: function (errorMsg) {
                     console.log("Something broke: ", errorMsg);
                 },
-                complete: function () {
+                complete: function() {
                 }
             });
         };
@@ -289,10 +287,12 @@
 
                         if (typeof serverResponse.isInternal !== "undefined") {
                             if (serverResponse.isInternal) {
+                                // This is an internal user.  NO LOVE!
                                 $("#errorMessage").html("Please contact the helpdesk at XXX-XXX-XXXX for assistance with access using an Internal email address.");
                                 $("#errorSummary").show();
                             }
                         } else if (typeof serverResponse.Auth0Blocked !== "undefined") {
+                            // User's account is blocked AT Auth0.  NO LOVE!
                             var errorMsg = "no particular reason";
                             if (serverResponse.Reason !== '') {
                                 errorMsg = serverResponse.Reason;
@@ -300,19 +300,41 @@
                             $("#errorMessage").html("This account has been blocked due to " + errorMsg + ". Please contact the helpdesk at XXX-XXX-XXXX for assistance.");
                             $("#errorSummary").show();
                         } else if (typeof serverResponse.auth0Id !== "undefined") {
-                            $("#registrationPreFlight").hide();
-                            $("#registrationFormControl").show();
-                            $("#userName").val(serverResponse.emailAddress).attr("disabled", "disabled");
-                            $("#hid_userName").val(serverResponse.emailAddress);
-                            $("#firstName").val(serverResponse.firstName).attr("disabled", "disabled");
-                            $("#hid_firstName").val(serverResponse.firstName);
-                            $("#lastName").val(serverResponse.lastName).attr("disabled", "disabled");
-                            $("#hid_lastName").val(serverResponse.lastName);
-                            $("#companyId").val(serverResponse.companyName).attr("disabled", "disabled");
-                            $("#hid_companyId").val(serverResponse.companyName);
-                            var sanitizedPhone = serverResponse.phoneNumber.replace(/\D/g, '');
-                            $("#phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length)).mask("(999) 999-9999").attr("disabled", "disabled");
-                            $("#hid_phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length));
+                            //User HAS an SSO account, make them prove that it's theirs
+                            //Show the password block and wait for them to enter a password and click next..
+
+                            //If the password field is already shown, compare the password that they entered to the one in their profile.
+                            if ($("#password").is(":visible")) {
+                            //Replace this with an actual SSO Login!
+                                if (1 == 1)
+                                {
+                                    //you're good to go
+                                    $("#registrationPreFlight").hide();
+                                    $("#registrationFormControl").show();
+                                    $("#userName").val(serverResponse.emailAddress).attr("disabled", "disabled");
+                                    $("#hid_userName").val(serverResponse.emailAddress);
+                                    $("#firstName").val(serverResponse.firstName).attr("disabled", "disabled");
+                                    $("#hid_firstName").val(serverResponse.firstName);
+                                    $("#lastName").val(serverResponse.lastName).attr("disabled", "disabled");
+                                    $("#hid_lastName").val(serverResponse.lastName);
+                                    $("#companyId").val(serverResponse.companyName).attr("disabled", "disabled");
+                                    $("#hid_companyId").val(serverResponse.companyName);
+                                    var sanitizedPhone = serverResponse.phoneNumber.replace(/\D/g, '');
+                                    $("#phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length)).mask("(999) 999-9999").attr("disabled", "disabled");
+                                    $("#hid_phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length));
+                                }
+                                else
+                                {
+                                    //Not the right password, exit
+                                    alert("Authentication failed.  Try again");
+                                    $("#passwordField").val('');
+                                    return;
+                                }
+                            } else
+                            {
+                                $("#PreFlightpassword").removeAttr('hidden');
+                                $("#passwordField").prop('required', true);
+                            }
                         } else {
                             // They exist in both Auth0 and EasyPay...but they're not logged in.
                             window.location.href = "/home/index?emailAddress=" + email;
@@ -333,210 +355,156 @@
                     console.log("Something happened: ", errorThrown);
                     return null;
                 },
-                complete: function () { }
+                complete: function() { }
             });
         }
-       /***** END VALIDATE EASYPAY USER *****/ 
+        /***** END VALIDATE EASYPAY USER *****/ 
 
 
-            /*** FORM VALIDATION RULES ***/
-            validator.validate({
-                rules: {
-                    userName: {
-                        required: true,
-                        email: true,
-                        minlength: 1,
-                        maxlength: 50,
-                        accept: '[-0-9a-zA-Z.+_]+@@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}'
-                    },
-                    firstName: {
-                        required: true,
-                        minlength: 1,
-                        maxlength: 50,
-                        accept: '[a-zA-Z]*'
-                    },
-                    lastName: {
-                        required: true,
-                        minlength: 1,
-                        maxlength: 50,
-                        accept: '[a-zA-Z]*'
-                    },
-                    password: {
-                        required: true,
-                        minlength: 1,
-                        maxlength: 50/*,
-                        accept : /^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/*/
-                    },
-                    confirmPassword: {
-                        required: true,
-                        minlength: 1,
-                        maxlength: 50,
-                        equalTo: "#password",
-                        /*accept : /^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$/*/
-                    },
-                    timezone: {
-                        required: true,
-                        minlength: 1,
-                        maxlength: 10
-                    },
-                    companyId: {
-                        required: true,
-                        minlength: 1,
-                        maxlength: 50
-                    },
-                    phoneNumber: {
-                        required: true,
-                        minlength: 9,
-                        maxlength: 16
-                    },
-                    phoneExtension: {
-                        required: false,
-                        maxlength: 10,
-                        accept: '[0-9]*'
-                    },
-                    mobileNumber: {
-                        minlength: 9,
-                        maxlength: 16,
-                        required: function () {
-                            return $('#mFaEnabled[value="true"]:checked').length > 0;
-                        }
-
-
-                         /*    depends: function (element) {
-                                if ($('#mFaEnabled[value="true"]:checked')) {
-                                    return true;
-                                } else {
-                                    $('#mobileNumber').attr('required');
-                                    return false;
-                                }
-                            }
-                        },
-                        
-                       
-                        required: function(element) {
-                            //return $('#mFaEnabled[value="Yes"]:checked')
-                            if($('#mFaEnabled:checked').val() === 'Yes'){
-                                return true;
-                            } else {
-                                $('#mobileNumber').removeAttr('required');
-                                return false;
-                            }
-                        }*/
-                    }
-
-
-
-
-                   /* mobileNumber: {
-                        minlength: 9,
-                        maxlength: 16,
-                        required: {
-                            
-                            depends: function (element) {
-                                if ($('#mFaEnabled:checked').val() === 'true') {
-                                    return true;
-                                    alert("Yes")
-                                } else {
-                                    return false;
-                                }
-                            }
-                        },
-                        accept: '[0-9]*'
-                        
-                        required: function(element) {
-                            //return $('#mFaEnabled[value="Yes"]:checked')
-                            if($('#mFaEnabled:checked').val() === 'true'){
-                                $('#MOBILE_NUMBER').attr('required');
-                                return true;
-                            } else {
-                                $('#MOBILE_NUMBER').removeAttr('required');
-                                return false;
-                            }
-                        }
-                    }*/
+        /*** FORM VALIDATION RULES ***/
+        validator.validate({
+            rules: {
+                userName: {
+                    required: true,
+                    email: true,
+                    accept: '[-0-9a-zA-Z.+_]+@@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}'
                 },
-                messages: {
-                    firstName: {
-                        required: "Please enter your first name",
-                        minlength: "Your first name can not be shorter than 1 character",
-                        maxlength: "Your first name can not be longer than 50 characters"
-                    },
-                    lastName: {
-                        required: "Please enter your last name",
-                        minlength: "Your last name can not be shorter than 1 character",
-                        maxlength: "Your last name can not be longer than 50 characters"
-                    },
-                    timezone: "Please select your timezone",
-                    companyId: {
-                        required: "Please enter your Company Name",
-                        maxlength: "Your company name can not be longer than 50 characters"
-                    },
-                    phoneNumber: {
-                        required: "Please enter a valid phone number"
-                    },
-                    mobileNumber: {
-                        required: "For Multi-Factor Authentication a mobile number must be included"
-                    },
-                    password: {
-                        required: "Please provide a password",
-                        minlength: "Your password must be at least 5 characters long"
-                    },
-                    confirmPassword: {
-                        required: "Please provide a password",
-                        minlength: "Your password must be at least 5 characters long",
-                        equalTo: "Please enter the same password as above"
-                    },
-                    phoneExtension: {
-                        maxlength: "Your extension can not be longer than 10 numbers",
-                    },
-                    userName: {
-                        required: "Please enter a valid email address",
-                        maxlength: "Your Email Address can not be longer than 50 characters"
-                    }
+                firstName: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 50,
+                    accept: '[a-zA-Z]*'
                 },
-                errorElement: "em",
-                errorPlacement: function (error, element) {
-                    // Add the help-block class to the error element
-                    error.addClass("help-block text-danger font-weight-bold");
-
-                    // Add `has-feedback` class to the parent div.form-group
-                    // in order to add icons to inputs
-                    element.parents(".errorCheck").addClass("has-feedback");
-
-                    if (element.prop("type") === "radio") {
-                        error.insertAfter(element.parent("label"));
-                    } else {
-                        error.insertAfter(element);
-                    }
-
-                    // Add the span element, if doesn't exists, and apply the icon classes to it.
-                    if (!element.next("span")[0]) {
-                        $("<span class='fa fa-times form-control-feedback'></span>").insertAfter(element);
-                    }
+                lastName: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 50,
+                    accept: '[a-zA-Z]*'
                 },
-                success: function (label, element) {
-                    // Add the span element, if doesn't exists, and apply the icon classes to it.
-                    if (!$(element).next("span")[0]) {
-                        $("<span class='fa fa-check form-control-feedback'></span>").insertAfter($(element));
+                password : {
+                    required : true,
+                    minlength: 8,
+                    maxlength: 50,
+                    accept: '(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@@$%^&*-]).{8,}'
+                },
+                confirmPassword: {
+                    required: true,
+                    minlength: 8,
+                    maxlength: 50,
+                    equalTo: "#password"
+                },
+                timezone: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 10
+                },
+                companyId: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 50
+                },
+                phoneNumber: {
+                    required: true,
+                    minlength: 9,
+                    maxlength: 16
+                },
+                phoneExtension: {
+                    required: false,
+                    minlength: 1,
+                    maxlength: 10,
+                    accept: '[0-9]*'
+                },
+                mobileNumber: {
+                    minlength: 9,
+                    maxlength: 16,
+                    required: function() {
+                        return $('#mFaEnabled[value="true"]:checked').length > 0;
                     }
+                }
+            },
+            messages: {
+                firstName: {
+                    required: "Please enter your first name",
+                    minlength: "Your first name can not be shorter than 1 character",
+                    maxlength: "Your first name can not be longer than 50 characters"
                 },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).parents(".errorCheck").addClass("has-danger").removeClass("has-success");
-                    $(element).next("span").addClass("fa-times").removeClass("fa-check");
+                lastName: {
+                    required: "Please enter your last name",
+                    minlength: "Your last name can not be shorter than 1 character",
+                    maxlength: "Your last name can not be longer than 50 characters"
                 },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).parents(".errorCheck").addClass("has-success").removeClass("has-danger");
-                    $(element).next("span").addClass("fa-check").removeClass("fa-times");
-                }/*,
+                timezone: "Please select your timezone",
+                companyId: {
+                    required: "Please enter your Company Name",
+                    maxlength: "Your company name can not be longer than 50 characters"
+                },
+                phoneNumber: {
+                    required: "Please enter a valid phone number"
+                },
+                mobileNumber: {
+                    required: "For Multi-Factor Authentication a mobile number must be included"
+                },
+                password: {
+                    required: "Please provide a password",
+                    minlength: "Your password must be at least 8 characters long",
+                },
+                confirmPassword: {
+                    required: "Please confirm your password",
+                    minlength: "Your password must be at least 8 characters long",
+                    equalTo: "Please enter the same password"
+                },
+                phoneExtension: {
+                    maxlength: "Your extension can not be longer than 10 numbers",
+                    accept: "Only numbers allowed"
+                },
+                userName: {
+                    required: "Please enter a valid email address",
+                    maxlength: "Your Email Address can not be longer than 50 characters"
+                }
+            },
+            errorElement: "em",
+            errorPlacement: function (error, element) {
+                // Add the help-block class to the error element
+                error.addClass("help-block text-danger font-weight-bold");
 
-                submitHandler: function(form) {
-                    $.ajax({
-                        success: function(response) {
-                            alert("submitted!");
-                        }            
-                    });  
-                }*/
-            });
-            /*** END FORM VALIDATION RULES ***/
+                // Add `has-feedback` class to the parent div.form-group
+                // in order to add icons to inputs
+                element.parents(".errorCheck").addClass("has-feedback");
+
+                if (element.prop("type") === "radio") {
+                    error.insertAfter(element.parent("label"));
+                } else {
+                    error.insertAfter(element);
+                }
+
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+                if (!element.next("span")[0]) {
+                    $("<span class='fa fa-times form-control-feedback'></span>").insertAfter(element);
+                }
+            },
+            success: function (label, element) {
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+                if (!$(element).next("span")[0]) {
+                    $("<span class='fa fa-check form-control-feedback'></span>").insertAfter($(element));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).parents(".errorCheck").addClass("has-danger").removeClass("has-success");
+                $(element).next("span").addClass("fa-times").removeClass("fa-check");
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).parents(".errorCheck").addClass("has-success").removeClass("has-danger");
+                $(element).next("span").addClass("fa-check").removeClass("fa-times");
+            }/*,
+
+            submitHandler: function(form) {
+                $.ajax({
+                    success: function(response) {
+                        alert("submitted!");
+                    }            
+                });  
+            }*/
+        });
+        /*** END FORM VALIDATION RULES ***/
     </script>
 }

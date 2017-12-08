@@ -1,37 +1,19 @@
-﻿<style>
-    .form-horizontal .has-feedback .form-control-feedback {
-        right: 20px;
-    }
-
-    .has-error .form-control-feedback {
-        color: #a94442;
-    }
-
-    .form-control-feedback {
-        position: absolute;
-        top: 35px;
-        z-index: 2;
-        text-align: center;
-        pointer-events: none;
-    }
-</style>
-<div class="col-6 ml-auto mr-auto">
+﻿<div class="col-6 ml-auto mr-auto">
     <div id="resetForm">
         <h2 class="title">Reset Password</h2>
         <form id="forgotPWForm" class="form-horizontal" novalidate>
-            <div class="form-group row">
-                <div class="col-sm-12 ml-auto mr-auto">
+            <div class="row">
+                <div class="form-group col-sm-12">
                     <label for="userName" style="margin-bottom: 0;">Email Address <span class="icon-danger">*</span></label>
-                    <input id="userName" type="email" class="form-control" required pattern="[a-z0-9._%+-]+\u0040[a-z0-9.-]+\.[a-z]{2,3}$" data-email-msg="Email format is not valid" />
+                    <div class="errorCheck"><input id="userName" type="email" class="form-control" required></div>
                 </div>
             </div>
-            <div class="form-group m-t-20">
-                <div class="col-xs-12">
+            <div class="row">
+                <div class="form-group col-sm-12">
                     <input type="button" id="submit" class="btn btn-round" title="Request Password Reset?" value="Submit">
                 </div>
             </div>
-            <div class="status"></div>
-        </form>
+        </form>       
     </div>
     <div id="successMessage" style="display: none;" class="col-xs-12 blue nexa-light">
         <!-- Sorry, this is how AGENT TRAX DOES IT! -->
@@ -51,8 +33,7 @@
 
     <script>
 
-        var validator = $("#forgotPWForm"),
-            status = $(".status");
+        var validator = $("#forgotPWForm");
 
         $.validator.addMethod("accept", function (value, element, param) {
             return value.match(new RegExp("^" + param + "$"));
@@ -61,35 +42,35 @@
         $(document).ready(function () {
 
             $('#userName').blur(function () {
-                $("#forgotPWForm").validate();
+                validator.validate();
             });
 
             $('#submit').click(function () {
-                $("#forgotPWForm").validate();
-                //Call the WebAPI to generate a code to email to the user and hide existing div and show SuccessMessage div
-                $.ajax({
-                    type: "POST",
-                    accepts: "application/json",
-                    contentType: 'application/json',
-                    url: "/api/v1/Administration/ForgotPassword?emailAddress=" + $('#userName').val(),
-                    success: function (user) {
-                        console.log("Request sent to send email");
-                        $("#resetForm").hide();
-                        $("#successMessage").css("display", "");
-                        $("successMessage").show();
-                    },
-                    error: function (errorMsg) {
-                        console.log("Well, that didn't work!  Error: ", errorMsg);
-                    },
-                    complete: function () {
-                        console.log("I'm done.");
-                    }
-                })
-
-
+                if(validator.valid()) {
+                    //Call the WebAPI to generate a code to email to the user and hide existing div and show SuccessMessage div
+                    $.ajax({
+                        type: "POST",
+                        accepts: "application/json",
+                        contentType: 'application/json',
+                        url: "/api/v1/Administration/ForgotPassword?emailAddress=" + $('#userName').val(),
+                        success: function (user) {
+                            console.log("Request sent to send email");
+                            $("#resetForm").hide();
+                            $("#successMessage").css("display", "");
+                            $("successMessage").show();
+                        },
+                        error: function (errorMsg) {
+                            console.log("Well, that didn't work!  Error: ", errorMsg);
+                        },
+                        complete: function () {
+                            console.log("I'm done.");
+                        }
+                    })
+                } else {
+                    //alert("NO SOUP FOR YOU!");
+                }
             });
         });
-
 
         validator.validate({
             rules: {

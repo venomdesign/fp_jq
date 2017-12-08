@@ -1,18 +1,36 @@
-﻿<div class="col-lg-3 ml-auto mr-auto">
-    <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
-    <form novalidate>
+﻿<script src="~/Scripts/auth0.min.js"></script>
+
+<div class="col-sm-12 col-md-6 ml-auto mr-auto">
+    <form novalidate id="loginForm" class="form-horizontal">
         <h2 class="title">Log In</h2>
+
+        <!-- Error Messages -->
+        <div id="auth-error" class="alert alert-danger" style="display: none;">
+            <strong>Error!</strong> Username or Password incorrect.
+        </div>
+        <div id="auth0-blocked" class="alert alert-danger" style="display: none;">
+            <span>
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                Account is blocked. Please contact <a href="mailto:agenttrax@fnf.com?Subject=Account%20Blocked">agenttrax@fnf.com</a> or call (800) 586-0031.
+            </span>
+        </div>
+        <div id="fnf-error" class="alert alert-danger" style="display: none;">
+            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            Sorry we seem to having a problem on our side right now. Please contact the helpdesk if this issue persists.
+        </div>
+        <!-- End Error Messages -->
         <div class="form-group">
-            <label for="username">Email Address  <span class="icon-danger">*</span></label>
-            <input type="text" id="username" class="form-control col-lg-12" required>
+            <label for="userName">Email Address <span class="icon-danger">*</span></label>
+            <div class="errorCheck"><input id="userName" name="userName" type="email" class="form-control" maxlength="50" required ></div>
         </div>
         <div class="form-group">
-            <label for="password">Password  <span class="icon-danger">*</span></label>
-            <input type="password" class="form-control col-lg-12" required>
+            <label for="password">Password <span class="icon-danger">*</span></label>
+            <div class="errorCheck"><input type="password" id="password" name="password" class="form-control" maxlength="50" required></div>
         </div>
         <div class="form-group">
-            <button class="btn btn-round" type="submit" title="Log In">
+            <button id="Login" class="btn btn-round" type="submit" title="Log In">
                 Log In
+                <i id="logging-on" class="fa fa-spinner fa-spin" aria-hidden="true" style="display: none;"></i>
             </button>
         </div>
         <div class="form-group">
@@ -21,16 +39,185 @@
         </div>
     </form>
 </div>
+@section scripts{
+    <script src="~/Scripts/jquery.validate.js"></script>
+}
 @section pageScripts{
     <script type="text/javascript">
+        var validator = $("#loginForm");
+        
+        $.validator.addMethod("accept", function (value, element, param) {
+            return value.match(new RegExp("^" + param + "$"));
+        }, 'please enter a valid email');
+
         $(document).ready(function () {
             // Check for parameters
             var queryParameters = url2json(window.location.href);
-            console.log(queryParameters);
             if (queryParameters) {
                 if (queryParameters.emailAddress) {
-                    $("#username").val(queryParameters.emailAddress);
+                    $("#userName").val(queryParameters.emailAddress);
                 }
+            }
+        });
+
+        var userConnection = null;
+        $(document).ready(function ()
+        {
+            $('#username').focus();
+            var hostUrl = window.origin
+
+            var webAuth = new auth0.WebAuth({
+                domain: "fnf-int.auth0.com",
+                redirectUri: hostUrl + "/Home/SsoCallback",
+                clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
+                audience: "https://agency-api-int.fnf.com/"
+            });
+
+            var sso = new auth0.Authentication({
+                domain: "fnf-int.auth0.com",
+                redirectUri: hostUrl + "/Home/SsoCallback",
+                clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
+                audience: "https://agency-api-int.fnf.com/"
+            });
+
+            $('#Login').click(function (e) {
+                if (validator.valid()) {
+
+                    e.preventDefault();
+                    HideAccountBlockedMessage();
+                    AuthErrorHide();
+                    ShowLoading();
+                    HideFnfError();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "https://agency-webapi-int.fnf.com/o/api/connection?username=" + encodeURI($("#userName").val().trim()).toLowerCase() + "&_" + new Date().getTime(),
+                        dataType: "json",
+                        success: function (data) {
+                            userConnection = data.connection;
+                            var status = data.status;
+
+                            webAuth.redirect.loginWithCredentials({
+                                connection: userConnection,
+                                username: $('#userName').val().trim(),
+                                password: $('#password').val().trim(),
+                                scope: "openid profile email",
+                                responseType: "token",
+                                type: 'login'
+                            },
+                            function (err, authResult) {
+                                if (err.statusCode != null) {
+                                    if (err.statusCode == 429) {
+                                        ShowAccountBlockedMessage();
+                                        HideLoading();
+                                    }
+                                    else {
+                                        AuthErrorShow();
+                                        HideLoading();
+                                    }
+                                }
+                            })
+                        },
+                        error: function (textStatus, errorThrown) {
+                            HideLoading();
+                            ShowFnfError();
+                        }
+                    });
+
+                }
+            });
+
+            function ShowLoading(){
+                $("#logging-on")[0].style.display = 'inline-block';
+            }
+
+            function HideLoading(){
+                $("#logging-on")[0].style.display = 'none';
+            }
+
+            function AuthErrorShow() {
+                $("#auth-error")[0].style.display = 'block';
+            }
+
+            function AuthErrorHide() {
+                $("#auth-error")[0].style.display = 'none';
+            }
+
+            function ShowFnfError() {
+                $("#fnf-error")[0].style.display = 'block';
+            }
+
+            function HideFnfError() {
+                $("#fnf-error")[0].style.display = 'none';
+            }
+
+            function ShowAccountBlockedMessage() {
+                $("#auth0-blocked")[0].style.display = 'block';
+            }
+
+            function HideAccountBlockedMessage()
+            {
+                var element = $('#auth0-blocked');
+                if (element[0] != null)
+                {
+                    $("#auth0-blocked")[0].style.display = 'none';
+                }
+            }
+        });
+
+        validator.validate({
+            rules: {
+                userName: {
+                    required: true,
+                    email: true,
+                    accept: '[-0-9a-zA-Z.+_]+@@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}'
+                },
+                password : {
+                    required : true
+                }
+            },
+            messages: {
+                userName: {
+                    required: "Please enter a valid email address",
+                    maxlength: "Your Email Address can not be longer than 50 characters"
+                },
+                password: {
+                    required: "Please provide a password",
+                }
+            },
+            errorElement: "em",
+            errorPlacement: function (error, element) {
+                // Add the help-block class to the error element
+                error.addClass("help-block text-danger font-weight-bold");
+
+                // Add `has-feedback` class to the parent div.form-group
+                // in order to add icons to inputs
+                element.parents(".errorCheck").addClass("has-feedback");
+
+                if (element.prop("type") === "radio") {
+                    error.insertAfter(element.parent("label"));
+                } else {
+                    error.insertAfter(element);
+                }
+
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+                if (!element.next("span")[0]) {
+                    $("<span class='fa fa-times form-control-feedback'></span>").insertAfter(element);
+                }
+            },
+            success: function (label, element) {
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+                if (!$(element).next("span")[0]) {
+                    $("<span class='fa fa-check form-control-feedback'></span>").insertAfter($(element));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).parents(".errorCheck").addClass("has-danger").removeClass("has-success");
+                $(element).next("span").addClass("fa-times").removeClass("fa-check");
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).parents(".errorCheck").addClass("has-success").removeClass("has-danger");
+                $(element).next("span").addClass("fa-check").removeClass("fa-times");
             }
         });
     </script>

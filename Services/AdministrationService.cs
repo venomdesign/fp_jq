@@ -143,5 +143,10 @@ namespace NetEasyPay.Services
         {
             return _repository.AssociateCRRARContactToUser(newUC);
         }
+
+        public bool ForgotPassword(string emailAddress)
+        {
+            return _repository.ForgotPassword(emailAddress);
+        }
     }
 }

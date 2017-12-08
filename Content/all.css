@@ -16918,3 +16918,11 @@ div[data-role=droptarget] { display: none; }
 #invoiceGrid > div.k-grid-content.k-auto-scrollable > table > tbody > tr.k-detail-row > td.k-detail-cell thead[role=rowgroup] {}
 #invoiceGrid > div.k-grid-content.k-auto-scrollable > table > tbody > tr.k-detail-row > td.k-detail-cell tr[role=row] {}
 #invoiceGrid > div.k-grid-content.k-auto-scrollable > table > tbody > tr.k-detail-row > td.k-detail-cell th[role=columnheader] {}
+
+
+
+
+/***** FORM ERROR PLACEMENT AND CSS *****/
+    .form-horizontal .has-feedback .form-control-feedback { right: 20px; }
+    .has-error .form-control-feedback { color: #a94442; }
+    .form-control-feedback { position: absolute; top: 40px; z-index: 2; text-align: center; pointer-events: none; }

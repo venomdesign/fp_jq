@@ -92,9 +92,28 @@ namespace NetEasyPay.Controllers
 
         [HttpPost]
         [Route("api/v{version:apiVersion}/Authorization/AuthZeroCallback")]
-        public void Auth0Callback(object token)
+        public string Auth0Callback(string authObject)
         {
+            // do some stuff
 
+            // return string what url to go to
+            return "http://localhost:50753/home/invoices";
+        }
+
+        [HttpPost]
+        [Route("api/v{version:apiVersion}/Authorization/AuthenticateUser")]
+        public object AuthenticateUser([FromBody] string credentials)
+        {
+            return Ok(credentials);
+            //var creds = JsonConvert.DeserializeObject<dynamic>(credentials);
+            //try
+            //{
+            //    return Ok(_service.AuthenticateUser(creds.emailAddress, creds.password));
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest(ex.InnerException.ToString());
+            //}
         }
 
         [HttpGet]

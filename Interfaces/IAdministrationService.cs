@@ -32,5 +32,7 @@ namespace NetEasyPay.Interfaces
         List<USER_TOKEN> GetTokensByUser(long userId);
         object AssociateCRRARContactToUser(USER_CONTACT newUC);
         List<APP_USER> GetPendingUsers(string status);
+        bool ForgotPassword(string emailAddress);
+
     }
 }
