@@ -55,6 +55,7 @@ namespace NetEasyPay.Models
         [Display(Name = "Time Zone")]
         public string TimeZone { get; set; }
 
+        [Display(Name = "Comments")]
         [DataType(DataType.MultilineText)]
         public string Notes { get; set; }
 

@@ -64,7 +64,10 @@
         $(document).ready(function ()
         {
             $('#username').focus();
-            var hostUrl = window.origin
+            var hostUrl = window.location.protocol + "//" + window.location.hostname;
+            if (window.location.port !== null & window.location.port.length > 0) {
+                hostUrl += ":" + window.location.port;
+            }
 
             var webAuth = new auth0.WebAuth({
                 domain: "fnf-int.auth0.com",

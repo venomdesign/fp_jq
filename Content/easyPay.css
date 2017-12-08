@@ -13640,3 +13640,12 @@ pre.prettyprint {
   -webkit-animation-duration: 18s;
   -moz-animation-duration: 18s;
 }
+
+label.required:after {
+    content: " *";
+    color: red;
+}
+
+.input-validation-error {
+    background-color: #f5593d;
+}

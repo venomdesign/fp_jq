@@ -3,14 +3,14 @@
     Layout = null;
 }
 
-<script src="~/Scripts/auth0.min.js"></script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src="~/Scripts/auth0.min.js"></script>
 
 <div class="container">
-
     <div id="loading" style="display: none; margin-top: 75px; text-align: center;">
         <h1>Logging you into EasyPay</h1>
         <h4>Please Wait...</h4>
@@ -23,62 +23,49 @@
 </div>
 
 <script type="text/javascript">
+    var hostUrl = window.location.protocol + "//" + window.location.hostname;
+    if (window.location.port !== null & window.location.port.length > 0) {
+        hostUrl += ":" + window.location.port;
+    }
 
-        var hostUrl = window.origin
+    var auth0 = new auth0.WebAuth({
+        domain: "fnf-int.auth0.com",
+        clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
+        audience: "https://agency-api-int.fnf.com/",
+        scope: "openid profile email"
+    });
 
-        var auth0 = new auth0.WebAuth({
-            domain: "fnf-int.auth0.com",
-            clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
-            audience: "https://agency-api-int.fnf.com/",
-            scope: "openid profile email"
-        });
-
-        var result = auth0.parseHash(window.location.hash, function (err, authResult) {
-            if (err || authResult == null)
-            {
-                if (err != null) {
-                    if (err.errorDescription.toLowerCase() == "user is blocked")
-                        window.location = hostUrl + "?status=b";
-                    else if (err.errorDescription.indexOf("Password Expired") > -1) {
-                        var obj = jQuery.parseJSON(err.errorDescription)
-                        window.location = "https://at-int.fntg.com" + "/password/expired?code=" + obj.code + "&username=" + obj.username + "&returnUrl=" + hostUrl;
-                        return
-                    }
-                    else {
-                        $('#Error').show();
-                        body.style.display = "inline";
-                    }
+    var result = auth0.parseHash(window.location.hash, function (err, authResult) {
+        if (err || authResult == null) {
+            if (err != null) {
+                if (err.errorDescription.toLowerCase() == "user is blocked")
+                    window.location = hostUrl + "?status=b";
+                else if (err.errorDescription.indexOf("Password Expired") > -1) {
+                    var obj = jQuery.parseJSON(err.errorDescription)
+                    window.location = "https://at-int.fntg.com" + "/password/expired?code=" + obj.code + "&username=" + obj.username + "&returnUrl=" + hostUrl;
+                    return
+                }
+                else {
+                    $('#Error').show();
+                    body.style.display = "inline";
                 }
             }
-            else {
-                $('#loading')[0].style.display = "block";
+        }
+        else {
+            $('#loading')[0].style.display = "block";
+            var payload = authResult.idTokenPayload;
 
-                user.accessToken = authResult.accessToken;
-                user.expiresIn = authResult.accessToken;
-                user.idToken = authResult.idToken;
-                //user.state = authResult.state == null ? null : authResult.state;
+            $.ajax({
+                type: "POST",
+                url: hostUrl + "/api/v1/Authorization/AuthZeroCallback?authObject=" + payload.email,
+                dataType: "json",
+                success: function (data) {
+                    window.location = data;
+                },
+                error: function (textStatus, errorThrown) {
 
-                //$("#user").val(JSON.stringify(user));
-                //$("#frm").attr('action', hostUrl + "/api/v1/Authorization/AuthZeroCallback");
-                //$("#frm").submit();
-
-                $.ajax({
-                    type: "POST",
-                    url: hostUrl + "/api/v1/Authorization/AuthZeroCallback?authObject=test",
-                    dataType: "json",
-                    success: function (data) {
-                        window.location = data;
-                    },
-                    error: function (textStatus, errorThrown) {
-                        
-                    }
-                });
-            }
-        });
-
-
+                }
+            });
+        }
+    });
 </script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-
