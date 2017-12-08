@@ -57,10 +57,10 @@
 
             $.ajax({
                 type: "POST",
-                url: hostUrl + "/api/v1/Authorization/AuthZeroCallback?authObject=" + payload.email,
+                url: hostUrl + "/api/v1/Authorization/AuthZeroCallback?er=" + payload.email,
                 dataType: "json",
                 success: function (data) {
-                    window.location = data;
+                    window.location = hostUrl + data;
                 },
                 error: function (textStatus, errorThrown) {
 

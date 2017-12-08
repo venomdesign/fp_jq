@@ -1,4 +1,7 @@
 ﻿<div class="container">
+    <div id="workingSpinner" class="row" style="display: none;">
+        <i class="fa fa-spin fa-spinner fa-2x fa-fw" aria-hidden="true"></i>
+    </div>
     <div class="row">
         <div class="col-sm-4 ml-auto mr-auto" id="registrationPreFlight">
             <form id="pageForm" class="form-signin">
@@ -36,13 +39,13 @@
                     <div class="form-group col-sm-6">
                         <label class=" control-label" for="password">Password <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <input type="text" class="form-control" id="password" maxlength="50" name="password">
+                            <input type="password" class="form-control" id="password" maxlength="50" name="password">
                         </div>
                     </div>
                     <div class="form-group col-sm-6">
                         <label class="control-label" for="confirmPassword">Confirm password <span class="icon-danger">*</span></label>
                         <div class="errorCheck">
-                            <input type="text" class="form-control" id="confirmPassword" maxlength="50" name="confirmPassword">
+                            <input type="password" class="form-control" id="confirmPassword" maxlength="50" name="confirmPassword">
                         </div>
                     </div>
                 </div>
@@ -147,16 +150,24 @@
 @section pageScripts{
     <script type="text/javascript">
         var validator = $("#registrationForm"),
-        status = $(".status");
+            status = $(".status");
 
         $.validator.addMethod("accept", function (value, element, param) {
             return value.match(new RegExp("^" + param + "$"));
         }, 'please enter a valid set of characters');
 
-        $(document).ready(function() {
+        $(document).ready(function () {
+            // Check for parameters
+            var queryParameters = url2json(window.location.href);
+            if (queryParameters) {
+                if (queryParameters.q1 === 'true') {
+                    $("#workingSpinner").show();
+                    $("#registrationPreFlight").hide();
+                    validateEasyPayUser('chicken', queryParameters.q2);
+                }
+            }
 
             /*$('#mFaEnabled').change(function(){
-              
                     if ($('#mFaEnabled[value="true"]:checked')) {
                         alert("Yes");
                         $('#mobileNumber').attr('required');
@@ -165,21 +176,18 @@
                         $('#mobileNumber').removeAttr('required');
                         mobileNumber: ""
                     }
-             
             });*/
 
             $("#registrationPreFlightSubmit").on("click",
-                function() {
+                function () {
                     registrationPreFlightSubmit();
                 }
             );
 
             $("#registerUser").on("click",
-                function() {
-                    if(validator.valid()) {
+                function () {
+                    if (validator.valid()) {
                         registerUser();
-                    } else {
-                        //alert("NO SOUP FOR YOU!");
                     }
                 }
             );
@@ -187,8 +195,8 @@
             // set up the masking for the phone and mobile
             $("#phoneNumber").mask("(999) 999-9999");
             $("#mobileNumber").mask("(999) 999-9999");
-            //$("#phoneExtension").mask("9999999999");                    
-                        
+            //$("#phoneExtension").mask("9999999999");
+
             $('#commentsAgents').bind('copy', function (e) { e.preventDefault(); return false; });
             $('#commentsAgents').bind('paste', function (e) { e.preventDefault(); return false; });
             /*$("#resetForm").click(function(){
@@ -200,81 +208,88 @@
             });*/
         }); //END DOC READY
 
-
-        /***** PREFLIGHT SUBMIT *****/ 
-        function registrationPreFlightSubmit() { 
+        /***** PREFLIGHT SUBMIT *****/
+        function registrationPreFlightSubmit() {
             console.log("Registration preflight fired.");
 
-            // clear the preflight error box
-            //if ($("#errorSummary:visible")) {
-            //    $("#errorMessage").html('');
-            //    $("#errorSummary").toggle();
-            //}
-
-            // Validate the email address being entered.
-            validateEasyPayUser(true, $("#preflightUsername").val());
-        };
-        /***** END PREFLIGHT SUBMIT *****/ 
-
-
-        /***** REGISTER USER *****/ 
-        function registerUser() {
-            console.log("registerUser fired");
-            validator.validate();
-
-            var user = {
-                "UserSysId": "0",
-                "EmailAddress": $("#userName").val(),
-                "Password": $("#password").val(),
-                "FirstName": $("#firstName").val(),
-                "LastName": $("#lastName").val(),
-                "CompanyId": $("#companyId").val(),
-                "PhoneNumber": $("#phoneNumber").val().replace(/\D/g, ''),
-                "PhoneExtension": $("#phoneExtension").val().replace(/\D/g, ''),
-                "MobileNumber": $("#mobileNumber").val().replace(/\D/g, ''),
-                "Timezone": $("#timezone").val(),
-                "IsLocked": "0",
-                "IsActive": "0",
-                "Notes": $("#commentsAgents").val(),
-                "UserGuid": "",
-                "MfaEnabled[]": $("#mFaEnabled:checked").val(),
-                "MfaPhoneNumber": $("#mobileNumber").val()
-            };
-
-            console.log("User to register: ", user);
-
-            var endpointUrl = "";
-            if (localStorage.getItem("CreateAuth0Record")) {
-                localStorage.removeItem("CreateAuth0Record")
-                endpointUrl = "/api/v1/Administration/AddUser?addAuth0=true";
+            if ($("#passwordPreFlight").is(":visible")) {
+                // Authenticate the user at Auth0
+                authenticateSsoUser();
             } else {
-                endpointUrl = "/api/v1/Administration/AddUser?addAuth0=false";
+                // Validate the email address being entered.
+                validateEasyPayUser(true, $("#preflightUsername").val());
+            }
+        };
+        /***** END PREFLIGHT SUBMIT *****/
+
+        function authenticateSsoUser() {
+            var hostUrl = window.location.protocol + "//" + window.location.hostname;
+            if (window.location.port !== null & window.location.port.length > 0) {
+                hostUrl += ":" + window.location.port;
             }
 
-            $.ajax({
-                type: "POST",
-                accepts: "application/json",
-                contentType: 'application/json',
-                url: endpointUrl,
-                data: JSON.stringify(user),
-                success: function (user) {
-                    var serverResponse = JSON.parse(user.results);
-                    window.location.href = "/home/index?emailAddress=" + serverResponse.USER_NAME;
-                },
-                error: function (errorMsg) {
-                    console.log("Something broke: ", errorMsg);
-                },
-                complete: function() {
-                }
+            var webAuth = new auth0.WebAuth({
+                domain: "fnf-int.auth0.com",
+                redirectUri: hostUrl + "/Home/SsoCallback",
+                clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
+                audience: "https://agency-api-int.fnf.com/"
             });
+
+            var sso = new auth0.Authentication({
+                domain: "fnf-int.auth0.com",
+                redirectUri: hostUrl + "/Home/SsoCallback",
+                clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
+                audience: "https://agency-api-int.fnf.com/"
+            });
+
+            if (validator.valid()) {
+                e.preventDefault();
+                //HideAccountBlockedMessage();
+                //AuthErrorHide();
+                //ShowLoading();
+                //HideFnfError();
+
+                $.ajax({
+                    type: "GET",
+                    url: "https://agency-webapi-int.fnf.com/o/api/connection?username=" + encodeURI($("#preflightUsername").val().trim()).toLowerCase() + "&_" + new Date().getTime(),
+                    dataType: "json",
+                    success: function (data) {
+                        userConnection = data.connection;
+                        var status = data.status;
+
+                        webAuth.redirect.loginWithCredentials({
+                            connection: userConnection,
+                            username: $('#preflightUsername').val().trim(),
+                            password: $('#passwordField').val().trim(),
+                            scope: "openid profile email",
+                            responseType: "token",
+                            type: 'login'
+                        },
+                            function (err, authResult) {
+                                if (err.statusCode != null) {
+                                    if (err.statusCode == 429) {
+                                        //ShowAccountBlockedMessage();
+                                        //HideLoading();
+                                    }
+                                    else {
+                                        //AuthErrorShow();
+                                        //HideLoading();
+                                    }
+                                }
+                            })
+                    },
+                    error: function (textStatus, errorThrown) {
+                        //HideLoading();
+                        //ShowFnfError();
+                    }
+                });
+
+            }
         };
-        /***** END REGISTER USER *****/ 
 
-
-
-
-        /***** VALIDATE EASYPAY USER *****/ 
+        /***** VALIDATE EASYPAY USER *****/
         function validateEasyPayUser(sso, email) {
+            $("#workingSpinner").show();
             var apiUrl = "/api/v1/Authorization/ValidateEmail?SSO=true&email=" + email.toLowerCase();
 
             $.ajax({
@@ -303,12 +318,11 @@
                             //User HAS an SSO account, make them prove that it's theirs
                             //Show the password block and wait for them to enter a password and click next..
 
-                            //If the password field is already shown, compare the password that they entered to the one in their profile.
-                            if ($("#password").is(":visible")) {
-                            //Replace this with an actual SSO Login!
-                                if (1 == 1)
-                                {
+                            if ($("#PreFlightpassword").is(":visible") || sso === 'chicken') {
+                                //Replace this with an actual SSO Login!
+                                if (sso === 'chicken') {
                                     //you're good to go
+                                    $("#workingSpinner").hide();
                                     $("#registrationPreFlight").hide();
                                     $("#registrationFormControl").show();
                                     $("#userName").val(serverResponse.emailAddress).attr("disabled", "disabled");
@@ -323,15 +337,13 @@
                                     $("#phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length)).mask("(999) 999-9999").attr("disabled", "disabled");
                                     $("#hid_phoneNumber").val(sanitizedPhone.substring(1, sanitizedPhone.length));
                                 }
-                                else
-                                {
+                                else {
                                     //Not the right password, exit
                                     alert("Authentication failed.  Try again");
                                     $("#passwordField").val('');
                                     return;
                                 }
-                            } else
-                            {
+                            } else {
                                 $("#PreFlightpassword").removeAttr('hidden');
                                 $("#passwordField").prop('required', true);
                             }
@@ -355,11 +367,67 @@
                     console.log("Something happened: ", errorThrown);
                     return null;
                 },
-                complete: function() { }
+                complete: function () {
+                    $("#workingSpinner").hide();
+                }
             });
         }
-        /***** END VALIDATE EASYPAY USER *****/ 
+        /***** END VALIDATE EASYPAY USER *****/
 
+        /***** REGISTER USER *****/
+        function registerUser() {
+            console.log("registerUser fired");
+            validator.validate();
+
+            var user = {
+                "UserSysId": "0",
+                "EmailAddress": $("#userName").val(),
+                "Password": $("#password").val(),
+                "FirstName": $("#firstName").val(),
+                "LastName": $("#lastName").val(),
+                "CompanyId": $("#companyId").val(),
+                "PhoneNumber": $("#phoneNumber").val().replace(/\D/g, ''),
+                "PhoneExtension": $("#phoneExtension").val().replace(/\D/g, ''),
+                "MobileNumber": $("#mobileNumber").val().replace(/\D/g, ''),
+                "Timezone": $("#timezone").val(),
+                "IsLocked": "0",
+                "IsActive": "0",
+                "Notes": $("#commentsAgents").val(),
+                "UserGuid": "",
+                "MfaEnabled[]": $("#mFaEnabled:checked").val(),
+                "MfaPhoneNumber": $("#mobileNumber").val()
+            };
+
+            console.log("User to register: ", user);
+
+            var endpointUrl = "";
+            if (localStorage.getItem("CreateAuth0Record")) {
+                console.log("I have no Auth0 record.");
+                localStorage.removeItem("CreateAuth0Record")
+                endpointUrl = "/api/v1/Administration/AddUser?addAuth0=true";
+            } else {
+                console.log("I have an Auth0 record.")
+                endpointUrl = "/api/v1/Administration/AddUser?addAuth0=false";
+            }
+
+            $.ajax({
+                type: "POST",
+                accepts: "application/json",
+                contentType: 'application/json',
+                url: endpointUrl,
+                data: JSON.stringify(user),
+                success: function (user) {
+                    var serverResponse = JSON.parse(user.results);
+                    window.location.href = "/home/thankyou?emailAddress=" + serverResponse.USER_NAME;
+                },
+                error: function (errorMsg) {
+                    console.log("Something broke: ", errorMsg);
+                },
+                complete: function () {
+                }
+            });
+        };
+        /***** END REGISTER USER *****/
 
         /*** FORM VALIDATION RULES ***/
         validator.validate({
@@ -381,8 +449,8 @@
                     maxlength: 50,
                     accept: '[a-zA-Z]*'
                 },
-                password : {
-                    required : true,
+                password: {
+                    required: true,
                     minlength: 8,
                     maxlength: 50,
                     accept: '(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@@$%^&*-]).{8,}'
@@ -417,7 +485,7 @@
                 mobileNumber: {
                     minlength: 9,
                     maxlength: 16,
-                    required: function() {
+                    required: function () {
                         return $('#mFaEnabled[value="true"]:checked').length > 0;
                     }
                 }
@@ -495,15 +563,7 @@
             unhighlight: function (element, errorClass, validClass) {
                 $(element).parents(".errorCheck").addClass("has-success").removeClass("has-danger");
                 $(element).next("span").addClass("fa-check").removeClass("fa-times");
-            }/*,
-
-            submitHandler: function(form) {
-                $.ajax({
-                    success: function(response) {
-                        alert("submitted!");
-                    }            
-                });  
-            }*/
+            }
         });
         /*** END FORM VALIDATION RULES ***/
     </script>

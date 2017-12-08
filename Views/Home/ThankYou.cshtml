@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "ThankYou";
 }
 <div class="wrapper">
@@ -13,7 +12,7 @@
                         </div>
                         <div class="text-center">
                             <img src="~/Images/mail_confirm.png" alt="img" class="thumb-lg m-t-20 center-block">
-                            <p class="text-muted font-13 m-t-20"> A email has been send to <b>@ViewBag.Email</b>. Please check for an email from EasyPay Approver and click on the included link to confirm your registration</p>
+                            <p class="text-muted font-13 m-t-20"> A email has been sent to <b><span id="emailAddress"></span></b>. Please check for an email from EasyPay Approver and click on the included link to confirm your registration.</p>
                         </div>
                     </div>
                 </div>
@@ -21,3 +20,16 @@
         </div>
     </div>
 </div>
+@section pageScripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Check for parameters
+            var queryParameters = url2json(window.location.href);
+            if (queryParameters) {
+                if (queryParameters.emailAddress) {
+                    $("#emailAddress").html(queryParameters.emailAddress);
+                }
+            }
+        });
+    </script>
+}

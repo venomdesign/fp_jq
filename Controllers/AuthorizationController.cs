@@ -101,13 +101,20 @@ namespace NetEasyPay.Controllers
             {
                 var o = admin.GetUser(er);
 
-                //they were logging in, otherwise we'd get an exception telling us that there were no items in the sequence
-                return "/home/invoices";
+                if (o.ACCOUNT_STATUS == "COMPLETE")
+                {
+                    //they were logging in, otherwise we'd get an exception telling us that there were no items in the sequence
+                    return "/home/invoices";
+                }
+                else
+                {
+                    return "/home/incomplete";
+                }
             }
             catch (Exception e)
             {
                 //there was no user, go back to the registration page
-                return "/home/register?";
+                return "/home/register?q1=true&q2=" + er;
             }
 
         }

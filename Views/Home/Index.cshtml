@@ -1,6 +1,6 @@
 ﻿<script src="~/Scripts/auth0.min.js"></script>
 
-<div class="col-sm-12 col-md-6 ml-auto mr-auto">
+<div class="col-sm-12 col-md-4 ml-auto mr-auto">
     <form novalidate id="loginForm" class="form-horizontal">
         <h2 class="title">Log In</h2>
 
@@ -50,19 +50,21 @@
             return value.match(new RegExp("^" + param + "$"));
         }, 'please enter a valid email');
 
-        $(document).ready(function () {
+        var userConnection = null;
+
+        $(document).ready(function ()
+        {
             // Check for parameters
             var queryParameters = url2json(window.location.href);
             if (queryParameters) {
                 if (queryParameters.emailAddress) {
                     $("#userName").val(queryParameters.emailAddress);
                 }
+                if (queryParameters.status === 'b') {
+                    ShowAccountBlockedMessage();
+                }
             }
-        });
 
-        var userConnection = null;
-        $(document).ready(function ()
-        {
             $('#username').focus();
             var hostUrl = window.location.protocol + "//" + window.location.hostname;
             if (window.location.port !== null & window.location.port.length > 0) {

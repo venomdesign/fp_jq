@@ -51,7 +51,7 @@
                     </div>
                     <div class="modal-body">
                         <div *ngFor="let invoice of paying" class="row">
-                            <div>{{invoice.OrderNumber}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.InvoiceDate}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.CurrentBalance}}</div>
+                            @*<div>{{invoice.OrderNumber}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.InvoiceDate}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.CurrentBalance}}</div>*@
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -119,7 +119,7 @@
                             $("table[role=treegrid] tr.k-master-row td").addClass("easyPay_cell");
                         },
                         columns: [
-                            { template: "<input type='checkbox' class='checkbox' />" },
+                            { template: "<input type='checkbox' class='checkbox' />", width: 30 },
                             { field: "invoiceReference", title: "Ref. #" },
                             { field: "billToContactName", title: "Name" },
                             { field: "attentionName", title: "Attn To" },

@@ -29,6 +29,11 @@ namespace NetEasyPay.Controllers
             return View();
         }
 
+        public ActionResult Incomplete()
+        {
+            return View();
+        }
+
         public ActionResult PaymentHistory()
         {
             return View();
