@@ -5,6 +5,7 @@ using NetEasyPay.Services;
 using Newtonsoft.Json;
 using System;
 using System.Web.Http;
+using System.Web.Http.Results;
 using static netApi.Common.Helpers;
 
 namespace NetEasyPay.Controllers
@@ -92,12 +93,23 @@ namespace NetEasyPay.Controllers
 
         [HttpPost]
         [Route("api/v{version:apiVersion}/Authorization/AuthZeroCallback")]
-        public string Auth0Callback(string authObject)
+        public string Auth0Callback(string er)
         {
-            // do some stuff
+            // attempt to load the user.  If a user exists, they were logging in.  If there is no user, they were registering.
+            var admin = new AdministrationService();
+            try
+            {
+                var o = admin.GetUser(er);
 
-            // return string what url to go to
-            return "http://localhost:50753/home/invoices";
+                //they were logging in, otherwise we'd get an exception telling us that there were no items in the sequence
+                return "/home/invoices";
+            }
+            catch (Exception e)
+            {
+                //there was no user, go back to the registration page
+                return "/home/register?";
+            }
+
         }
 
         [HttpPost]
