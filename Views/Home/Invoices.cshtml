@@ -50,7 +50,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div *ngFor="let invoice of paying" class="row">
+                        <div class="row">
                             @*<div>{{invoice.OrderNumber}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.InvoiceDate}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.CurrentBalance}}</div>*@
                         </div>
                     </div>
@@ -152,7 +152,13 @@
                             { field: "arCompanyOperation", title: "File No." },
                             { field: "referenceData", title: "Ref. Data" },
                             { field: "currentBalance", title: "Amount", format: "{0:c}" }
-                        ]
+                        ],
+                        pdf: {
+                            allPages: true
+                        },
+                        excel: {
+                            allPages: true
+                        },
                     }).data("kendoGrid");
 
                     function detailInit(e) {

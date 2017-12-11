@@ -2,6 +2,21 @@
     <div id="workingSpinner" class="row" style="display: none;">
         <i class="fa fa-spin fa-spinner fa-2x fa-fw" aria-hidden="true"></i>
     </div>
+    <!-- Error Messages -->
+    <div id="auth-error" class="alert alert-danger" style="display: none;">
+        <strong>Error!</strong> Username or Password incorrect.
+    </div>
+    <div id="auth0-blocked" class="alert alert-danger" style="display: none;">
+        <span>
+            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            Account is blocked. Please contact <a href="mailto:agenttrax@fnf.com?Subject=Account%20Blocked">agenttrax@fnf.com</a> or call (800) 586-0031.
+        </span>
+    </div>
+    <div id="fnf-error" class="alert alert-danger" style="display: none;">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        Sorry we seem to having a problem on our side right now. Please contact the helpdesk if this issue persists.
+    </div>
+    <!-- End Error Messages -->
     <div class="row">
         <div class="col-sm-4 ml-auto mr-auto" id="registrationPreFlight">
             <form id="pageForm" class="form-signin">
@@ -119,13 +134,13 @@
                         <label class="control-label">Enable Multi-Factor Authentication</label>
                         <div class="form-check-radio">
                             <label class="form-check-label">
-                                <input class="form-check-input" id="mFaEnabled" name="mFaEnabled[]" type="radio" value="true"> Yes
+                                <input class="form-check-input" id="mFaEnabledYes" name="mFaEnabled[]" type="radio" value="true"> Yes
                                 <span class="form-check-sign"></span>
                             </label>
                         </div>
                         <div class="form-check-radio">
                             <label class="form-check-label">
-                                <input class="form-check-input" id="mFaEnabled" name="mFaEnabled[]" type="radio" value="false" checked> No
+                                <input class="form-check-input" id="mFaEnabledNo" name="mFaEnabled[]" type="radio" value="false" checked> No
                                 <span class="form-check-sign"></span>
                             </label>
                         </div>
@@ -146,6 +161,7 @@
 @section scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/auth0.min.js"></script>
 }
 @section pageScripts{
     <script type="text/javascript">
@@ -162,7 +178,7 @@
             if (queryParameters) {
                 if (queryParameters.q1 === 'true') {
                     $("#workingSpinner").show();
-                    $("#registrationPreFlight").hide();
+                    //$("#registrationPreFlight").hide();
                     validateEasyPayUser('chicken', queryParameters.q2);
                 }
             }
@@ -212,7 +228,8 @@
         function registrationPreFlightSubmit() {
             console.log("Registration preflight fired.");
 
-            if ($("#passwordPreFlight").is(":visible")) {
+            if ($("#passwordField").is(":visible")) {
+                console.log("Authenticate an SSO user");
                 // Authenticate the user at Auth0
                 authenticateSsoUser();
             } else {
@@ -243,11 +260,10 @@
             });
 
             if (validator.valid()) {
-                e.preventDefault();
-                //HideAccountBlockedMessage();
-                //AuthErrorHide();
-                //ShowLoading();
-                //HideFnfError();
+                //e.preventDefault();
+                HideAccountBlockedMessage();
+                AuthErrorHide();
+                HideFnfError();
 
                 $.ajax({
                     type: "GET",
@@ -268,22 +284,18 @@
                             function (err, authResult) {
                                 if (err.statusCode != null) {
                                     if (err.statusCode == 429) {
-                                        //ShowAccountBlockedMessage();
-                                        //HideLoading();
+                                        ShowAccountBlockedMessage();
                                     }
                                     else {
-                                        //AuthErrorShow();
-                                        //HideLoading();
+                                        AuthErrorShow();
                                     }
                                 }
                             })
                     },
                     error: function (textStatus, errorThrown) {
-                        //HideLoading();
-                        //ShowFnfError();
+                        ShowFnfError();
                     }
                 });
-
             }
         };
 
@@ -566,5 +578,29 @@
             }
         });
         /*** END FORM VALIDATION RULES ***/
+
+        function AuthErrorShow() {
+            $("#auth-error")[0].style.display = 'block';
+        }
+
+        function AuthErrorHide() {
+            $("#auth-error")[0].style.display = 'none';
+        }
+
+        function ShowFnfError() {
+            $("#fnf-error")[0].style.display = 'block';
+        }
+
+        function HideFnfError() {
+            $("#fnf-error")[0].style.display = 'none';
+        }
+
+        function ShowAccountBlockedMessage() {
+            $("#auth0-blocked")[0].style.display = 'block';
+        }
+
+        function HideAccountBlockedMessage() {
+            $("#auth0-blocked")[0].style.display = 'none';
+        }
     </script>
 }

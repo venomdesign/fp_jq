@@ -89,11 +89,17 @@
                             { field: "confirmationNbr", title: "Confirmation No." },
                             { field: "userName", title: "UserName" },
                             { field: "amount", title: "Amount", format: "{0:c}" }
-                        ]
+                        ],
+                        pdf: {
+                            allPages: true
+                        },
+                        excel: {
+                            allPages: true
+                        },
                     }).data("kendoGrid");
 
                     function detailInit(e) {
-                        console.log(e);
+                        //console.log(e);
 
                         $("<div class=\"invoiceDetails\"/>").appendTo(e.detailCell).kendoGrid(
                             {
