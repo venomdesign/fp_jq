@@ -28,7 +28,30 @@
                 }).done(function (results) {
 
                     var grid = $("#invoiceGrid").kendoGrid({
-                        dataSource: { data: results, pageSize: 10 },
+                        dataSource: {
+                            data: results,
+                            pageSize: 10,
+                            schema: {
+                                parse: function (data) {
+                                    var events = [];
+                                    for (var i = 0; i < data.length; i++) {
+                                        var event = data[i];
+                                        event.TransactionDate = kendo.toString(event.date, 'MM/dd/yyyy');
+                                        events.push(event);
+                                    }
+                                    return events;
+                                },
+                                model: {
+                                    fields: {
+                                        trxDate: { type: "date" },
+                                        confirmationNbr: { type: "string" },
+                                        userName: { type: "string" },
+                                        amount: { type: "number" },
+                                        TransactionDate: { type: "date"}
+                                    }
+                                }
+                            }
+                        },
                         pageSize: 10,
                         sortable: true,
                         filterable: true,
@@ -51,10 +74,6 @@
                             $('#invoiceGrid .k-grid-header-wrap').css("border-width", "0");
                             $("table[role=treegrid").addClass("table table-hover nowrap dataTable dtr-inline");
                             $("table[role=treegrid] tr.k-master-row td").addClass("easyPay_cell");
-                            //$(".k-pager-wrap.k-grid-pager.k-widget.k-floatwrap").wrap("<div id='invoice_table'><div id='row'></div></div>");
-                            //$(".k-pager-info.k-label").wrap('<div class="pull-left" id="left"></div>');
-                            //$("#row > div > a.k-link.k-pager-nav.k-pager-first").before('<div class="pull-right" id="right">');
-                            //$("#row > div > a.k-link.k-pager-nav.k-pager-last").after('</div>');
                             $("#excelExport").click(function (e) {
                                 var grid = $("#invoiceGrid").data("kendoGrid");
                                 grid.saveAsExcel();
@@ -66,7 +85,7 @@
                         },
                         reorderable: false,
                         columns: [
-                            { field: "trxDate", title: "Date", template: "#= kendo.toString(kendo.parseDate(date, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
+                            { field: "TransactionDate", title: "Date", template: "#= kendo.toString(TransactionDate, 'MM/dd/yyyy') #" },
                             { field: "confirmationNbr", title: "Confirmation No." },
                             { field: "userName", title: "UserName" },
                             { field: "amount", title: "Amount", format: "{0:c}" }

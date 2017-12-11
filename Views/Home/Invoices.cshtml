@@ -93,7 +93,32 @@
                 }).done(function (results) {
 
                     var grid = $("#invoiceGrid").kendoGrid({
-                        dataSource: { data: results, pageSize: 10 },
+                        dataSource: {
+                            data: results,
+                            pageSize: 10,
+                            schema: {
+                                parse: function (data) {
+                                    var events = [];
+                                    for (var i = 0; i < data.length; i++) {
+                                        var event = data[i];
+                                        event.InvDt = kendo.toString(event.invoiceDate, 'MM/dd/yyyy');
+                                        events.push(event);
+                                    }
+                                    return events;
+                                },
+                                model: {
+                                    fields: {
+                                        invoiceReference: { type: "string" },
+                                        billToContactName: { type: "string" },
+                                        attentionName: { type: "string" },
+                                        invoiceDate: { type: "date" },
+                                        arCompanyOperation: { type: "string" },
+                                        referenceData: { type: "string"},
+                                        currentBalance: { type: "number" }
+                                    }
+                                }
+                            }
+                        },
                         pageSize: 10,
                         sortable: true,
                         filterable: true,
@@ -123,7 +148,7 @@
                             { field: "invoiceReference", title: "Ref. #" },
                             { field: "billToContactName", title: "Name" },
                             { field: "attentionName", title: "Attn To" },
-                            { field: "invoiceDate", title: "Date", template: "#= kendo.toString(kendo.parseDate(invoiceDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
+                            { field: "invoiceDate", title: "Date", template: "#= kendo.toString(invoiceDate, 'MM/dd/yyyy') #" },
                             { field: "arCompanyOperation", title: "File No." },
                             { field: "referenceData", title: "Ref. Data" },
                             { field: "currentBalance", title: "Amount", format: "{0:c}" }
@@ -131,7 +156,7 @@
                     }).data("kendoGrid");
 
                     function detailInit(e) {
-                        console.log(e);
+                        //console.log(e);
 
                         $("<div/>").appendTo(e.detailCell).kendoGrid(
                             {
@@ -145,6 +170,10 @@
                                 dataBound: function(){
                                     $("#invoiceGrid > div.k-grid-content.k-auto-scrollable > table > tbody > tr.k-detail-row > td.k-detail-cell > div > div.k-grid-header").removeAttr("style");
                                 },
+                                columns: [
+                                    { field: "transactionDescription", title: "Transaction Description" },
+                                    { field: "chargeAmount", title: "Charge Amount", format: "{0:c}"}
+                                ]
                             });
                     }
                     //Row Selector when user checks checkbox
@@ -159,7 +188,6 @@
                         checkedRows[dataItem.id] = checked;
                         if (checked) {
                             //-select the row
-                           // $('.selectedInvoice').attr('disabled', false);
                             row.addClass("k-state-selected");
                             selectedCount += 1;
                             selectedTotal += dataItem.currentBalance;
