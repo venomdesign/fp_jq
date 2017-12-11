@@ -4,6 +4,7 @@ using NetEasyPay;
 using Swashbuckle.Application;
 using System;
 using System.Linq;
+using System.Configuration;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
@@ -22,8 +23,12 @@ namespace NetEasyPay
                         c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                         c.PrettyPrint();
 
-                        var schemes = new string[] { "http", "https" };
-                        c.Schemes(schemes);
+                        //var schemes = new string[] { "http", "https" };
+                        //c.Schemes(schemes);
+                        c.Schemes(new[] { "http", "https" });
+                        c.RootUrl(r => GetRootUrlFromAppConfig());
+
+
                         c.IgnoreObsoleteActions();
                         c.IncludeXmlComments(string.Format(@"{0}Models\EasyPayApi.xml", AppDomain.CurrentDomain.BaseDirectory));
                     })
@@ -31,6 +36,19 @@ namespace NetEasyPay
                     {
                         c.DocumentTitle("FNF EasyPay API");
                     });
+        }
+
+        private static string GetRootUrlFromAppConfig()
+        {
+            var s = "";
+#if DEBUG
+            s = "http://localhost:50753";
+#else
+            s = ConfigurationManager.AppSettings["SwaggerRootURL"].ToString();
+#endif
+
+            return s;
+
         }
     }
 }
