@@ -78,6 +78,11 @@ namespace NetEasyPay.Controllers
 
         public ActionResult Register2(string email, bool? sso)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("EnterEmail");
+            }
+
             RegistrationModel model = new RegistrationModel
             {
                 EmailAddress = email,
@@ -96,7 +101,7 @@ namespace NetEasyPay.Controllers
             var seralizedModel = JsonConvert.SerializeObject(model);
             var newUser = JsonConvert.DeserializeObject<EasyPayAuth0User>(seralizedModel);
 
-            if (model.HasSSO == false)
+            if (model.HasSSO == true)
             {
                 ModelState.Remove("Password");
                 ModelState.Remove("ConfirmPassword");

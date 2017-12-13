@@ -1,0 +1,14 @@
+﻿{
+  "Overides": [
+    {
+      "key": "BaseUrl",
+      "Value": "http://localhost:50753/",
+      "AppName": ""
+    },
+    {
+      "key": "Test",
+      "Value": "Test",
+      "AppName": ""
+    }
+  ]
+}

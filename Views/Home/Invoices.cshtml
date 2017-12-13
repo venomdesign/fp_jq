@@ -1,257 +1,66 @@
-﻿
-@{
-    ViewBag.Title = "Invoices";
-}
-
-    <div id="invoice_table">
-        <div id="row">
-            <div id="left"></div>
-            <div id="middle"></div>
-            <div class="pull-right text-right" id="right" style="height: 40px;">
-                <span class="control-label pull-left" for="CreditCard">Export Format:</span>
-                <button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>
-                <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
-            </div>
-        </div>
-        <div id="row" class="runningTotal">
-            <div id="left" class="text-right text-nowrap" style="width: 400px; max-width: 400px;">
-                <span class="control-label pull-left" for="CreditCard">Credit Card #:</span>
-                <select class="form-control" name="CreditCard" style="width: 250px;">
-                </select>
-            </div>
-
-            <div id="middle"></div>
-            <div id="right" class="text-right mw-100">
-                Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
-            </div>
-        </div>
-    </div>
+﻿<div id="invoice_table">
     <div id="row">
-        <div id="invoiceGrid"></div>
-    </div>       
-
-
-                        
-    <div id="invoice_table" class="runningTotal total_bottom mw-100">
-        <div id="row">
-            <div id="right" class="text-right mw-100">
-                Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
-            </div>
+        <div id="left"></div>
+        <div id="middle"></div>
+        <div class="pull-right text-right" id="right" style="height: 40px;">
+            <span class="control-label pull-left" for="CreditCard">Export Format:</span>
+           @* <button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>*@
+            <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
         </div>
     </div>
-        
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="paymentSummary" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-center" id="paymentSummary">Invoice Summary</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            @*<div>{{invoice.OrderNumber}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.InvoiceDate}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.CurrentBalance}}</div>*@
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="left-side">
-                            <button type="button" class="btn btn-danger btn-link">Cancel</button>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="right-side">
-                            <button type="button" class="btn btn-success btn-link">Pay Selected</button>
-                        </div>
-                    </div>
+    <div id="row" class="runningTotal">
+        <div id="left" class="text-right text-nowrap" style="width: 400px; max-width: 400px;">
+            <span class="control-label pull-left" for="CreditCard">Credit Card #:</span>
+            <select class="form-control" name="CreditCard" style="width: 250px;"></select>
+        </div>
+
+        <div id="middle"></div>
+        <div id="right" class="text-right mw-100">
+            Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
+        </div>
+    </div>
+</div>
+<div id="row">
+    <div id="invoiceGrid"></div>
+</div>
+<div id="invoice_table" class="runningTotal total_bottom mw-100">
+    <div id="row">
+        <div id="right" class="text-right mw-100">
+            Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="paymentSummary" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="paymentSummary">Invoice Summary</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @*<div>{{invoice.OrderNumber}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.InvoiceDate}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.CurrentBalance}}</div>*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="left-side">
+                    <button type="button" class="btn btn-danger btn-link">Cancel</button>
+                </div>
+                <div class="divider"></div>
+                <div class="right-side">
+                    <button type="button" class="btn btn-success btn-link">Pay Selected</button>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        @section pageScripts{
-        <script>
-            var selectedCount = 0; $(".invCount").text(selectedCount);
-            var selectedTotal = 0; $(".invTotal").text(selectedTotal);
-            $.ajax({
-                url: "/api/v1/Administration/GetTokensForUser?UserSysId=1008"
-            }).done(function (result) {
-                result = JSON.parse(result);
+@section pageScripts{
 
-                $.each(result, function () {
-                    var len2 = this.TOKEN.toString().length;
-
-                    var lastFour = this.TOKEN.toString().slice(len2 - 4);
-
-                    $("select[name='CreditCard']")
-                        .append($('<option>', { "value": this.TOKEN.toString() })
-                            .text(this.NICKNAME.toString() + ": ****" + lastFour));
-                });
-            });
-            $(document).ready(function () {
-            $(".selectedInvoice").prop("disabled", true);
-                $.ajax({
-                    url: "/api/v1/Crrar/GetUnpaidInvoices?contactId=138098"
-                }).done(function (results) {
-
-                    var grid = $("#invoiceGrid").kendoGrid({
-                        dataSource: {
-                            data: results,
-                            pageSize: 10,
-                            schema: {
-                                parse: function (data) {
-                                    var events = [];
-                                    for (var i = 0; i < data.length; i++) {
-                                        var event = data[i];
-                                        event.InvDt = kendo.toString(event.invoiceDate, 'MM/dd/yyyy');
-                                        events.push(event);
-                                    }
-                                    return events;
-                                },
-                                model: {
-                                    fields: {
-                                        invoiceReference: { type: "string" },
-                                        billToContactName: { type: "string" },
-                                        attentionName: { type: "string" },
-                                        invoiceDate: { type: "date" },
-                                        arCompanyOperation: { type: "string" },
-                                        referenceData: { type: "string"},
-                                        currentBalance: { type: "number" }
-                                    }
-                                }
-                            }
-                        },
-                        pageSize: 10,
-                        sortable: true,
-                        filterable: true,
-                        pageable: {
-                            alwaysVisible: true,
-                            pageSizes: [5, 10, 20, 100],
-                            previousNext: true,
-                            input: false,
-                            info: true,
-                            buttonCount: 5,
-                            messages: {
-                                display: "{0}-{1} of {2} Invoices",
-                                itemsPerPage: "Invoices"
-                            }
-                        },
-                        groupable: true,
-                        detailInit: detailInit,
-                        //dataBound: onDataBound,
-                        dataBound: function(){
-                            $("#invoiceGrid .k-grid-header").removeAttr("style");
-                            $('#invoiceGrid .k-grid-header-wrap').css("border-width", "0");
-                            $("table[role=treegrid").addClass("table table-hover nowrap dataTable dtr-inline");
-                            $("table[role=treegrid] tr.k-master-row td").addClass("easyPay_cell");
-                        },
-                        columns: [
-                            { template: "<input type='checkbox' class='checkbox' />", width: 30 },
-                            { field: "invoiceReference", title: "Ref. #" },
-                            { field: "billToContactName", title: "Name" },
-                            { field: "attentionName", title: "Attn To" },
-                            { field: "invoiceDate", title: "Date", template: "#= kendo.toString(invoiceDate, 'MM/dd/yyyy') #" },
-                            { field: "arCompanyOperation", title: "File No." },
-                            { field: "referenceData", title: "Ref. Data" },
-                            { field: "currentBalance", title: "Amount", format: "{0:c}" }
-                        ],
-                        pdf: {
-                            allPages: true
-                        },
-                        excel: {
-                            allPages: true
-                        },
-                    }).data("kendoGrid");
-
-                    function detailInit(e) {
-                        //console.log(e);
-
-                        $("<div/>").appendTo(e.detailCell).kendoGrid(
-                            {
-                                dataSource: { data: e.data.detail, pageSize: 10 },
-                                serverPaging: true,
-                                serverSorting: true,
-                                serverFiltering: true,
-                                pageSize: 10,
-                                sortable: true,
-                                pageable: true,
-                                dataBound: function(){
-                                    $("#invoiceGrid > div.k-grid-content.k-auto-scrollable > table > tbody > tr.k-detail-row > td.k-detail-cell > div > div.k-grid-header").removeAttr("style");
-                                },
-                                columns: [
-                                    { field: "transactionDescription", title: "Transaction Description" },
-                                    { field: "chargeAmount", title: "Charge Amount", format: "{0:c}"}
-                                ]
-                            });
-                    }
-                    //Row Selector when user checks checkbox
-                    grid.table.on("click", ".checkbox", selectRow);
-                    var checkedRows = {};
-                    function selectRow() {
-                        var checked = this.checked,
-                            row = $(this).closest("tr"),
-                            grid = $("#invoiceGrid").data("kendoGrid"),
-                            dataItem = grid.dataItem(row);
-
-                        checkedRows[dataItem.id] = checked;
-                        if (checked) {
-                            //-select the row
-                            row.addClass("k-state-selected");
-                            selectedCount += 1;
-                            selectedTotal += dataItem.currentBalance;
-                            $(".selectedInvoice").prop("disabled", false);
-                        } else {
-                            //-remove selection
-                            row.removeClass("k-state-selected");
-                            selectedCount -= 1;
-                            selectedTotal -= dataItem.currentBalance;
-                            
-                        }
-
-
-/*var allChecked = true;
-$("input.checkbox").each(function(index, element){
-  if(!element.checked){
-    allChecked = false;
-    $(".selectedInvoice").prop("disabled", true);
-    return false;
-  } else {
-        $(".selectedInvoice").prop("disabled", false);
-  }
-});*/
-/*
-$("input.checkbox").change(function () {
-    $(this:checked).each(function() {
-      $(".selectedInvoice").prop("disabled", false);
-    })
-    $("input.checkbox").each(function() {
-        $(".selectedInvoice").prop("disabled", !this.checked);
-    })
- })*/
-        /*$(".checkbox").each(function(){
-            $(this).change(function () {
-
-                if (this.checked.length === 0) {
-                    $(".selectedInvoice").prop("disabled", true);
-                } else {
-                    $(".selectedInvoice").prop("disabled", false);
-                }
-            }).change()
-        })*/
-
-                        $(".invCount").text(selectedCount);
-                        $(".invTotal").text(parseInt(selectedTotal));
-                    }
-                });
-            });
-
-            $("#excelExport").click(function (e) {
-                var grid = $("#invoiceGrid").data("kendoGrid");
-                grid.saveAsExcel();
-            });
-
-            $("#PdfExport").click(function (e) {
-                var grid = $("#invoiceGrid").data("kendoGrid");
-                grid.saveAsPDF();
-            });
-
-        </script>
-        }
+<script src="~/js/invoices.js"></script>   
+    <script>
+        GetUnpaidInvoices(138098);
+    </script>
+}

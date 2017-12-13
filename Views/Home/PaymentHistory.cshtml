@@ -1,128 +1,25 @@
-﻿
-@{
-    ViewBag.Title = "PaymentHistory";
-}
-
-    <div id="invoice_table">
-        <div id="row">
-            <div id="left"></div>
-            <div id="middle"></div>
-            <div class="pull-right text-right" id="right" style="height: 40px;">
-                <span class="control-label pull-left" for="CreditCard">Export Format:</span>
-                <button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>
-                <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
-            </div>
+﻿<div id="invoice_table">
+    <div id="row">
+        <div id="left"></div>
+        <div id="middle"></div>
+        <div class="pull-right text-right" id="right" style="height: 40px;">
+            <span class="control-label pull-left" for="CreditCard">Export Format:</span>
+            @*<button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>*@
+            <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
         </div>
     </div>
-    <div id="row">
-        <div id="invoiceGrid"></div>
-    </div>
+</div>
+<div id="row">
+    <div id="invoiceGrid"></div>
+</div>
 
-    @section pageScripts{
-        <script>
+@section pageScripts{
+    
+    <script src="~/js/invoices.js"></script>
+    <script>
 
-            $(document).ready(function () {
-            
-                $.ajax({
-                    url: "/api/v1/Crrar/GetHistory?contactId=1000009"
-                }).done(function (results) {
-
-                    var grid = $("#invoiceGrid").kendoGrid({
-                        dataSource: {
-                            data: results,
-                            pageSize: 10,
-                            schema: {
-                                parse: function (data) {
-                                    var events = [];
-                                    for (var i = 0; i < data.length; i++) {
-                                        var event = data[i];
-                                        event.TransactionDate = kendo.toString(event.date, 'MM/dd/yyyy');
-                                        events.push(event);
-                                    }
-                                    return events;
-                                },
-                                model: {
-                                    fields: {
-                                        trxDate: { type: "date" },
-                                        confirmationNbr: { type: "string" },
-                                        userName: { type: "string" },
-                                        amount: { type: "number" },
-                                        TransactionDate: { type: "date"}
-                                    }
-                                }
-                            }
-                        },
-                        pageSize: 10,
-                        sortable: true,
-                        filterable: true,
-                        pageable: {
-                            alwaysVisible: true,
-                            pageSizes: [5, 10, 20, 100],
-                            previousNext: true,
-                            input: false,
-                            info: true,
-                            buttonCount: 5,
-                            messages: {
-                                display: "{0}-{1} of {2} Invoices",
-                                itemsPerPage: "Invoices"
-                            }
-                        },
-                        groupable: true,
-                        detailInit: detailInit,
-                        dataBound: function(){
-                            $("#invoiceGrid .k-grid-header").removeAttr("style");
-                            $('#invoiceGrid .k-grid-header-wrap').css("border-width", "0");
-                            $("table[role=treegrid").addClass("table table-hover nowrap dataTable dtr-inline");
-                            $("table[role=treegrid] tr.k-master-row td").addClass("easyPay_cell");
-                            $("#excelExport").click(function (e) {
-                                var grid = $("#invoiceGrid").data("kendoGrid");
-                                grid.saveAsExcel();
-                            });
-                            $("#PdfExport").click(function (e) {
-                                var grid = $("#invoiceGrid").data("kendoGrid");
-                                grid.saveAsPDF();
-                            });
-                        },
-                        reorderable: false,
-                        columns: [
-                            { field: "TransactionDate", title: "Date", template: "#= kendo.toString(TransactionDate, 'MM/dd/yyyy') #" },
-                            { field: "confirmationNbr", title: "Confirmation No." },
-                            { field: "userName", title: "UserName" },
-                            { field: "amount", title: "Amount", format: "{0:c}" }
-                        ],
-                        pdf: {
-                            allPages: true
-                        },
-                        excel: {
-                            allPages: true
-                        },
-                    }).data("kendoGrid");
-
-                    function detailInit(e) {
-                        //console.log(e);
-
-                        $("<div class=\"invoiceDetails\"/>").appendTo(e.detailCell).kendoGrid(
-                            {
-                                dataSource: { data: e.data.invoices, pageSize: 10 },
-                                columns: [
-                                    { field: "invoiceNbr", title: "Invoice Number" },
-                                    { field: "billTo", title: "Contact Name" },
-                                    { field: "amount", title: "Amount", format: "{0:c}" }
-                                ],
-                                 dataBound: function(){
-                                    $("#invoiceGrid > div.k-grid-content.k-auto-scrollable > table > tbody > tr.k-detail-row > td.k-detail-cell > div > div.k-grid-header").removeAttr("style");
-                            
-                                },
-                                serverPaging: false,
-                                serverSorting: true,
-                                serverFiltering: true,
-                                pageSize: 10,
-                                sortable: false,
-                                pageable: false
-                            });
-                    }
-                });
-
-            });
-        </script>
-    }
+        $(document).ready(function () {
+            GetPaymentHistory(1000009);
+        });
+    </script>
+}

@@ -2,6 +2,7 @@
 using log4net;
 using System;
 using System.Configuration;
+using System.IO;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
@@ -17,13 +18,16 @@ namespace NetEasyPay
 
         protected void Application_Start()
         {
-            //LoadApplicationProperties();
+            Log.Debug("Application_Start initiated");
+            LoadApplicationProperties();
 
+            Log.Debug("Attempting to configure application componets.");
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            Log.Debug("Application components configured. Application started successfully.");
         }
 
 
@@ -40,7 +44,7 @@ namespace NetEasyPay
             Log.Info("AuthenticationService Url: " + ConfigurationManager.AppSettings["authenticationService.url"]);
 
             Log.Debug("invoking authenticate()...");
-            AppProperty.Instance.Authenticate();
+            AppProperty.Instance.Authenticate(); 
             Log.Debug("authentcate() successful");
             AppProperty.Instance.SetConfigurationManagerValues();
         }

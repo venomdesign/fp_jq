@@ -117,8 +117,8 @@ namespace NetEasyPay.Controllers
             {
                 // TODO: Don't use exceptions as Status Switching...
                 //there was no user, go back to the registration page
-                return "/home/register?q1=true&q2=" + er;
-                //return $"/home/register2/?email={er}&sso=true";
+                //return "/home/register?q1=true&q2=" + er;
+                return $"/home/register2/?email={er}&sso=true";
             }
 
         }

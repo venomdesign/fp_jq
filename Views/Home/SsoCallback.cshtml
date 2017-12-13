@@ -63,7 +63,10 @@
                     window.location = hostUrl + data;
                 },
                 error: function (textStatus, errorThrown) {
-
+                    console.log(textStatus.responseText);
+                },
+                failure: function (textStatus, errorThrown) {
+                    console.log(textStatus.responseText);
                 }
             });
         }

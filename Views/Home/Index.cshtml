@@ -49,8 +49,9 @@
 }
 @section pageScripts{
     <script type="text/javascript">
+
         var validator = $("#loginForm");
-        
+
         $.validator.addMethod("accept", function (value, element, param) {
             return value.match(new RegExp("^" + param + "$"));
         }, 'please enter a valid email');
@@ -77,17 +78,17 @@
             }
 
             var webAuth = new auth0.WebAuth({
-                domain: "fnf-int.auth0.com",
-                redirectUri: hostUrl + "/Home/SsoCallback",
-                clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
-                audience: "https://agency-api-int.fnf.com/"
+                domain: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Domain"]",
+                redirectUri: "@AppPropertiesLibrary.AppProperty.Instance["BaseUrl"]" + "/Home/SsoCallback",
+                clientID: "@AppPropertiesLibrary.AppProperty.Instance["Auth0ClientId"]",
+                audience: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Audience"]"
             });
 
             var sso = new auth0.Authentication({
-                domain: "fnf-int.auth0.com",
-                redirectUri: hostUrl + "/Home/SsoCallback",
-                clientID: "wVNMiQfTJUkKlQCYcOqLvu604peJKGT4",
-                audience: "https://agency-api-int.fnf.com/"
+                domain: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Domain"]",
+                redirectUri: "@AppPropertiesLibrary.AppProperty.Instance["BaseUrl"]" + "/Home/SsoCallback",
+                clientID: "@AppPropertiesLibrary.AppProperty.Instance["Auth0ClientId"]",
+                audience: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Audience"]"
             });
 
             $('#Login').click(function (e) {
@@ -101,7 +102,7 @@
 
                     $.ajax({
                         type: "GET",
-                        url: "https://agency-webapi-int.fnf.com/o/api/connection?username=" + encodeURI($("#userName").val().trim()).toLowerCase() + "&_" + new Date().getTime(),
+                        url: "@AppPropertiesLibrary.AppProperty.Instance["AgencyAuthenticationBaseurl"]" + "o/api/connection?username=" + encodeURI($("#userName").val().trim()).toLowerCase() + "&_" + new Date().getTime(),
                         dataType: "json",
                         success: function (data) {
                             userConnection = data.connection;

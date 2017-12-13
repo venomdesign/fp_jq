@@ -34,7 +34,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving unpaid invoices for Contact ID: {contactId}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -48,7 +51,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving paid invoices for Contact ID: {contactId}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -64,7 +70,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving pending invoices for Contact ID: {contactId}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -80,7 +89,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving pending invoices for Contact ID: {contactId} and Attention ID: {attnId}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -96,21 +108,27 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving invoice history for Contact ID: {contactId}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
         [HttpGet]
         [Route("api/v{version:apiVersion}/Crrar/MarkInvoicePaid")]
-        public object MarkInvoicePaid(DateTime invoiceDate, string InvoiceRef, string confirmationNumber, string transactionNumber)
+        public object MarkInvoicePaid(DateTime invoiceDate, string invoiceRef, string confirmationNumber, string transactionNumber)
         {
             try
             {
-                return _service.MarkInvoicePaid(invoiceDate, InvoiceRef, confirmationNumber, transactionNumber);
+                return _service.MarkInvoicePaid(invoiceDate, invoiceRef, confirmationNumber, transactionNumber);
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error calling Mark Invoice Paid for Invoice Date: {invoiceDate}, Invoice Ref: {invoiceRef}, Confirmation Number: {confirmationNumber}, and Transaction Number: {transactionNumber}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -129,7 +147,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving Contact By Company for Company Name: {companyName}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -143,7 +164,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving Contact by AttnName for Attention Name: {attnName}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -157,7 +181,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving Contact by Company Name and AttnName for Company Name: {companyName} and Attn Name: {attnName}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
@@ -173,9 +200,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                log.Error(e);
+                var message = $"Error retreiving Contact by Contact ID for Contact ID: {contactId}";
+                log.Error(message, e);
 
-                throw e;
+                return BadRequest(message);
             }
         }
 
@@ -189,21 +217,27 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving Contact By Contact ID and Attn Name for Contact ID: {contactId} and Attn Name : {attnName}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
         [HttpGet]
         [Route("api/v{version:apiVersion}/Crrar/GetContactByInvoiceReference")]
-        public object GetContactByInvoiceReference(string InvoiceRef)
+        public object GetContactByInvoiceReference(string invoiceRef)
         {
             try
             {
-                return _service.GetContactByInvoiceReference(InvoiceRef);
+                return _service.GetContactByInvoiceReference(invoiceRef);
             }
             catch (Exception e)
             {
-                throw e;
+                var message = $"Error retreiving Contact By Invoice Reference for Invoice Ref: {invoiceRef}";
+                log.Error(message, e);
+
+                return BadRequest(message);
             }
         }
 
