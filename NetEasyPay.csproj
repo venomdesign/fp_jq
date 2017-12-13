@@ -224,6 +224,7 @@
     <Compile Include="Interfaces\IBankOfAmericaService.cs" />
     <Compile Include="Interfaces\ICrrarService.cs" />
     <Compile Include="Models\EnterEmailModel.cs" />
+    <Compile Include="Models\EnterPasswordModel.cs" />
     <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AdministrationService.cs" />
@@ -331,6 +332,7 @@
     <Content Include="Views\Home\Register2.cshtml" />
     <Content Include="Views\Home\EnterEmail.cshtml" />
     <Content Include="Views\Home\SsoCallback.cshtml" />
+    <Content Include="Views\Home\EnterPassword.cshtml" />
     <None Include="Web.DR.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

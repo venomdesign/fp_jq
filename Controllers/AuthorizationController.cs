@@ -13,12 +13,15 @@ namespace NetEasyPay.Controllers
     [ApiVersion("1.0")]
     public class AuthorizationController : ApiController
     {
-        private readonly IAuthorizationService _service;
+        private readonly IAuthorizationService _authService;
+        private readonly IAdministrationService _adminService;
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public AuthorizationController()
         {
-            _service = new AuthorizationService();
+            _authService = new AuthorizationService();
+            _adminService = new AdministrationService();
         }
 
         /// <summary>
@@ -33,7 +36,7 @@ namespace NetEasyPay.Controllers
         {
             try
             {
-                return Ok(_service.LoadUser(UserId));
+                return Ok(_authService.LoadUser(UserId));
             }
             catch (Exception e)
             {
@@ -58,7 +61,7 @@ namespace NetEasyPay.Controllers
         {
             try
             {
-                return Ok(_service.GetClaims(this.User));
+                return Ok(_authService.GetClaims(this.User));
             }
             catch (Exception e)
             {
@@ -83,7 +86,7 @@ namespace NetEasyPay.Controllers
         {
             try
             {
-                return Ok((Response)_service.ValidateEmail(email.ToLower()));
+                return Ok((Response)_authService.ValidateEmail(email.ToLower()));
             }
             catch (Exception ex)
             {
@@ -96,10 +99,9 @@ namespace NetEasyPay.Controllers
         public string Auth0Callback(string er)
         {
             // attempt to load the user.  If a user exists, they were logging in.  If there is no user, they were registering.
-            var admin = new AdministrationService();
             try
             {
-                var o = admin.GetUser(er);
+                var o = _adminService.GetUser(er);
 
                 if (o.ACCOUNT_STATUS == "COMPLETE")
                 {
@@ -113,8 +115,10 @@ namespace NetEasyPay.Controllers
             }
             catch (Exception e)
             {
+                // TODO: Don't use exceptions as Status Switching...
                 //there was no user, go back to the registration page
                 return "/home/register?q1=true&q2=" + er;
+                //return $"/home/register2/?email={er}&sso=true";
             }
 
         }

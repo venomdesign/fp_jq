@@ -67,12 +67,21 @@ namespace NetEasyPay.Controllers
             return View();
         }
 
-        public ActionResult Register2(string email, bool? hasSSO)
+        public ActionResult EnterPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction("EnterEmail");
+
+            var model = new EnterPasswordModel { Email = email };
+            return View(model);
+        }
+
+        public ActionResult Register2(string email, bool? sso)
         {
             RegistrationModel model = new RegistrationModel
             {
                 EmailAddress = email,
-                HasSSO = hasSSO ?? false
+                HasSSO = sso ?? false
             };
 
             return View(model);
@@ -87,41 +96,52 @@ namespace NetEasyPay.Controllers
             var seralizedModel = JsonConvert.SerializeObject(model);
             var newUser = JsonConvert.DeserializeObject<EasyPayAuth0User>(seralizedModel);
 
-            try
+            if (model.HasSSO == false)
             {
-                string executingUser = "";
-
-                var result = _service.AddUser(newUser);
-                log.Info(string.Format("User {0} created New user with the following data: \n\n{1}", executingUser, seralizedModel));
-
-                ViewBag.IsSuccessful = true;
+                ModelState.Remove("Password");
+                ModelState.Remove("ConfirmPassword");
             }
-            catch (DbEntityValidationException e)
+
+            if (ModelState.IsValid)
             {
-                foreach (var eve in e.EntityValidationErrors)
+                try
                 {
-                    StringBuilder errmsg = new StringBuilder();
+                    string executingUser = "";
 
-                    errmsg.Append(string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                        eve.Entry.Entity.GetType().Name, eve.Entry.State.ToString()));
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        errmsg.Append(string.Format("- Property: \"{0}\", Error: \"{1}\"",
-                            ve.PropertyName, ve.ErrorMessage));
-                    }
-                    log.Error(errmsg);
+                    var result = _service.AddUser(newUser);
+                    log.Info(string.Format("User {0} created New user with the following data: \n\n{1}", executingUser, seralizedModel));
+
+                    ViewBag.IsSuccessful = true;
                 }
-                ViewBag.IsSuccessful = false;
-                ViewBag.Message = "The system experienced a problem submitting your information.  Please contact the system administrator.";
-            }
-            catch (Exception e)
-            {
-                var msg = string.Format("Error Saving User Record.\n\nData:\n{0}.\n\n{1}", seralizedModel, e.Message);
-                log.Error(e);
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        StringBuilder errmsg = new StringBuilder();
 
-                ViewBag.IsSuccessful = false;
-                ViewBag.Message = "The system experienced a problem submitting your information.  Please contact the system administrator.";
+                        errmsg.Append(string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State.ToString()));
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            errmsg.Append(string.Format("- Property: \"{0}\", Error: \"{1}\"",
+                                ve.PropertyName, ve.ErrorMessage));
+                        }
+                        log.Error(errmsg);
+                    }
+                    ViewBag.IsSuccessful = false;
+                    ViewBag.Message = "The system experienced a problem submitting your information.  Please contact the system administrator.";
+                }
+                catch (Exception e)
+                {
+                    var msg = string.Format("Error Saving User Record.\n\nData:\n{0}.\n\n{1}", seralizedModel, e.Message);
+                    log.Error(e);
+
+                    ViewBag.IsSuccessful = false;
+                    ViewBag.Message = "The system experienced a problem submitting your information.  Please contact the system administrator.";
+                }
+
             }
+
 
             return View(model);
         }

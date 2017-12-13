@@ -30,16 +30,16 @@
     </div>
 
     <div class="form-horizontal" id="errorSummary" style="display: none;">
-        <div class="col-md-10 bg-warning" id="errorMessage"></div>
+        <div class="col-md-10 bg-warning" style="border-radius: 5px;" id="errorMessage"></div>
     </div>
 }
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="pleaseWaitModal" tabindex="-1" role="dialog" aria-labelledby="pleaseWaitModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Please Wait</h4>
+                <h4 class="modal-title" id="pleaseWaitModalLabel">Please Wait</h4>
             </div>
             <div class="modal-body center-block">
             </div>
@@ -52,9 +52,22 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+        
+
         $(function () {
-            $("#btnSubmit").click(function () {
-                validateEasyPayUser(true);
+            $("#btnSubmit").click(function (evt) {
+                evt.preventDefault();
+                if ($("form").valid()) {
+                    validateEasyPayUser(true);
+                }
+            });
+
+            $("input").keypress(function (event) {
+                if (event.which == 13) {
+                    event.preventDefault();
+                    $(this).blur();
+                    $("#btnSubmit").focus().click();
+                }
             });
         });
 
@@ -72,19 +85,22 @@
                         console.log("Server response: ", data);
                         var serverResponse = JSON.parse(data.results);
 
-                        // Is Internal Email?
+                        // Is Internal Email... flyby denied!
                         if (typeof serverResponse.isInternal !== "undefined") {
                             if (serverResponse.isInternal) {
                                 $("#errorMessage").html("Please contact the helpdesk at XXX-XXX-XXXX for assistance with access using an Internal email address.");
                                 $("#errorSummary").show();
                             }
                         }
+                        // User's account is blocked at Auth0... flyby denied!
                         else if (typeof serverResponse.Auth0Blocked !== "undefined") {
                             $("#errorMessage").html("This account has been blocked. Please contact the helpdesk at XXX-XXX-XXXX for assistance.");
                             $("#errorSummary").show();
                         }
+                        // User has a SSO account, have them enter their password
                         else if (typeof serverResponse.auth0Id !== "undefined") {
-                            window.location = "/home/Register2/?email=" + serverResponse.emailAddress + "&hasSSO=true";
+                            window.location = "/home/EnterPassword/?email=" + serverResponse.emailAddress;
+                            //window.location = "/home/Register2/?email=" + serverResponse.emailAddress + "&hasSSO=true";
                         }
                         else {
                             // They exist in both Auth0 and EasyPay...but they're not logged in.
@@ -107,9 +123,9 @@
 
         function showPleaseWait(tgl) {
             if (tgl == true)
-                $("#myModal").modal();
+                $("#pleaseWaitModal").modal();
             else
-                $("#myModal").modal("hide");
+                $("#pleaseWaitModal").modal("hide");
         }
     </script>
 }

@@ -11,6 +11,7 @@ namespace NetEasyPay.Models
         [Required]
         [Display(Name = "Email Address")]
         [EmailAddress]
+        [MaxLength(50)]
         public string EmailAddress { get; set; }
 
         [Required]
