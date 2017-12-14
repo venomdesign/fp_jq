@@ -23,6 +23,8 @@ var GetTokensForUser = function (userSysId) {
 var GetUnpaidInvoices = function (contactId) {
     $(".selectedInvoice").prop("disabled", true);
 
+    GetTokensForUser(1008);
+
     $.ajax({
         url: "/api/v1/Crrar/GetUnpaidInvoices?contactId=" + contactId
     }).done(function (results) {

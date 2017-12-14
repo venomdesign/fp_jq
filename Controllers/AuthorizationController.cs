@@ -1,4 +1,5 @@
 ﻿using Microsoft.Web.Http;
+using netApi.Repositories.Administration.Repositories;
 using netApi.Repositories.Authorization.Model;
 using NetEasyPay.Interfaces;
 using NetEasyPay.Services;
@@ -113,9 +114,17 @@ namespace NetEasyPay.Controllers
                     return "/home/incomplete";
                 }
             }
+            // TODO: Don't use exceptions as Status Switching...
+            catch (GetUserInactiveException e)
+            {
+                return "/?status=inactive";
+            }
+            catch (GetUserLockedAccountException e)
+            {
+                return "/?status=locked";
+            }
             catch (Exception e)
             {
-                // TODO: Don't use exceptions as Status Switching...
                 //there was no user, go back to the registration page
                 //return "/home/register?q1=true&q2=" + er;
                 return $"/home/register2/?email={er}&sso=true";

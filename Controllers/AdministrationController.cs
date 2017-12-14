@@ -846,7 +846,7 @@ namespace NetEasyPay.Controllers
             //Activate the account
             UserToUpdate.IS_ACTIVE = "0";
             UserToUpdate.IS_LOCKED = "0";
-            UserToUpdate.ACCOUNT_STATUS = "";
+            UserToUpdate.ACCOUNT_STATUS = "PENDING USER VALIDATION";
 
             //Update the user in the database and return whatever result that we're passed!
             var resp = UpdateUser(JsonConvert.SerializeObject(UserToUpdate));

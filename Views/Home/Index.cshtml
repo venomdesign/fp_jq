@@ -14,6 +14,12 @@
                 Account is blocked. Please contact <a href="mailto:agenttrax@fnf.com?Subject=Account%20Blocked">agenttrax@fnf.com</a> or call (800) 586-0031.
             </span>
         </div>
+        <div id="auth0-inactive" class="alert alert-danger" style="display: none;">
+            <span>
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                Account is inactive. Please contact <a href="mailto:agenttrax@fnf.com?Subject=Account%20Blocked">agenttrax@fnf.com</a> or call (800) 586-0031.
+            </span>
+        </div>
         <div id="fnf-error" class="alert alert-danger" style="display: none;">
             <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
             Sorry we seem to having a problem on our side right now. Please contact the helpdesk if this issue persists.
@@ -21,7 +27,7 @@
         <!-- End Error Messages -->
         <div class="form-group">
             <label for="userName">Email Address <span class="icon-danger">*</span></label>
-            <div class="errorCheck"><input id="userName" name="userName" type="email" class="form-control" maxlength="50" required ></div>
+            <div class="errorCheck"><input id="userName" name="userName" type="email" class="form-control" maxlength="50" required></div>
         </div>
         <div class="form-group">
             <label for="password">Password <span class="icon-danger">*</span></label>
@@ -48,18 +54,19 @@
     <script src="~/Scripts/jquery.validate.js"></script>
 }
 @section pageScripts{
+
+
     <script type="text/javascript">
 
         var validator = $("#loginForm");
 
         $.validator.addMethod("accept", function (value, element, param) {
             return value.match(new RegExp("^" + param + "$"));
-        }, 'please enter a valid email');
+        }, 'Please enter a valid email address');
 
         var userConnection = null;
 
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             // Check for parameters
             var queryParameters = url2json(window.location.href);
             if (queryParameters) {
@@ -79,14 +86,14 @@
 
             var webAuth = new auth0.WebAuth({
                 domain: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Domain"]",
-                redirectUri: "@AppPropertiesLibrary.AppProperty.Instance["BaseUrl"]" + "/Home/SsoCallback",
+                redirectUri: "@AppPropertiesLibrary.AppProperty.Instance["BaseUrl"]" + "Home/SsoCallback",
                 clientID: "@AppPropertiesLibrary.AppProperty.Instance["Auth0ClientId"]",
                 audience: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Audience"]"
             });
 
             var sso = new auth0.Authentication({
                 domain: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Domain"]",
-                redirectUri: "@AppPropertiesLibrary.AppProperty.Instance["BaseUrl"]" + "/Home/SsoCallback",
+                redirectUri: "@AppPropertiesLibrary.AppProperty.Instance["BaseUrl"]" + "Home/SsoCallback",
                 clientID: "@AppPropertiesLibrary.AppProperty.Instance["Auth0ClientId"]",
                 audience: "@AppPropertiesLibrary.AppProperty.Instance["Auth0Audience"]"
             });
@@ -102,7 +109,7 @@
 
                     $.ajax({
                         type: "GET",
-                        url: "@AppPropertiesLibrary.AppProperty.Instance["AgencyAuthenticationBaseurl"]" + "o/api/connection?username=" + encodeURI($("#userName").val().trim()).toLowerCase() + "&_" + new Date().getTime(),
+                        url: "@AppPropertiesLibrary.AppProperty.Instance["AgencyAuthenticationBaseUrl"]" + "o/api/connection?username=" + encodeURI($("#userName").val().trim()).toLowerCase() + "&_" + new Date().getTime(),
                         dataType: "json",
                         success: function (data) {
                             userConnection = data.connection;
@@ -116,18 +123,18 @@
                                 responseType: "token",
                                 type: 'login'
                             },
-                            function (err, authResult) {
-                                if (err.statusCode != null) {
-                                    if (err.statusCode == 429) {
-                                        ShowAccountBlockedMessage();
-                                        HideLoading();
+                                function (err, authResult) {
+                                    if (err.statusCode != null) {
+                                        if (err.statusCode == 429) {
+                                            ShowAccountBlockedMessage();
+                                            HideLoading();
+                                        }
+                                        else {
+                                            AuthErrorShow();
+                                            HideLoading();
+                                        }
                                     }
-                                    else {
-                                        AuthErrorShow();
-                                        HideLoading();
-                                    }
-                                }
-                            })
+                                })
                         },
                         error: function (textStatus, errorThrown) {
                             HideLoading();
@@ -138,11 +145,11 @@
                 }
             });
 
-            function ShowLoading(){
+            function ShowLoading() {
                 $("#logging-on")[0].style.display = 'inline-block';
             }
 
-            function HideLoading(){
+            function HideLoading() {
                 $("#logging-on")[0].style.display = 'none';
             }
 
@@ -166,15 +173,29 @@
                 $("#auth0-blocked")[0].style.display = 'block';
             }
 
-            function HideAccountBlockedMessage()
-            {
+            function HideAccountBlockedMessage() {
                 var element = $('#auth0-blocked');
-                if (element[0] != null)
-                {
+                if (element[0] != null) {
                     $("#auth0-blocked")[0].style.display = 'none';
                 }
             }
+
+            
         });
+
+        function ToggleAccountInactiveMessage(tgl) {
+            if (tgl == true)
+                $("#auth0-inactive").show();
+            else
+                $("#auth0-inactive").hide();
+        }
+
+        function ToggleAccountBlockedMessage(tgl) {
+            if (tgl == true)
+                $("#auth0-blocked").show();
+            else
+                $("#auth0-blocked").hide();
+        }
 
         validator.validate({
             rules: {
@@ -183,8 +204,8 @@
                     email: true,
                     accept: '[-0-9a-zA-Z.+_]+@@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}'
                 },
-                password : {
-                    required : true
+                password: {
+                    required: true
                 }
             },
             messages: {
@@ -232,4 +253,22 @@
             }
         });
     </script>
+
+    @if (ViewBag.UserInactive != null && ViewBag.UserInactive == true)
+    {
+        <script type="text/javascript">
+            $(function () {
+                ToggleAccountInactiveMessage(true);
+            });
+        </script>
+    }
+
+    @if (ViewBag.UserLocked != null && ViewBag.UserLocked == true)
+    {
+        <script type="text/javascript">
+            $(function () {
+                ToggleAccountBlockedMessage(true);
+            });
+        </script>
+    }
 }

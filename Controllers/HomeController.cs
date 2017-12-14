@@ -24,8 +24,16 @@ namespace NetEasyPay.Controllers
             _service = new AdministrationService();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string status)
         {
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status.ToLower() == "inactive")
+                    ViewBag.UserInactive = true;
+                else if (status.ToLower() == "locked")
+                    ViewBag.UserLocked = true;
+            }
+
             return View();
         }
 
@@ -56,10 +64,7 @@ namespace NetEasyPay.Controllers
 
         public ActionResult Register(bool? newWay)
         {
-            if (newWay.HasValue && newWay.Value)
-                return RedirectToAction("EnterEmail");
-
-            return View();
+            return View("EnterEmail");
         }
 
         public ActionResult EnterEmail()

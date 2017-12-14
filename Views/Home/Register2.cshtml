@@ -49,21 +49,38 @@ else
                 @if (Model.HasSSO == false)
                 {
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label required" })
-                            <div class="">
-                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        <div class="col-md-6">
+                            <div class="form-group col-md-12" style="padding-left: 0px !important;">
+                                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label required" })
+                                <div class="">
+                                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-12" style="padding-left: 0px !important;">
+                                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label required" })
+                                <div class="">
+                                    @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center" style="font-weight: bold;">Password Requirements</div>
+                            <div class="small">
+                                <ul>
+                                    <li>The password must have a minimum of 8 characters</li>
+                                    <li>The password must contain characters from at least 3 of the following 4 categories</li>
+                                    <li>Uppercase characters (A-Z)</li>
+                                    <li>Lowercase characters (a-z)</li>
+                                    <li>Base 10 digits (0-9)</li>
+                                    <li>Non-alphanumeric (for example: !, $, # or %)</li>
+                                    <li>The password cannot be the same as the username and cannot contain 3 or more consecutive characters from the username</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <div class="form-group col-md-6">
-                            @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label required" })
-                            <div class="">
-                                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
                     </div>
                 }
 
@@ -129,7 +146,7 @@ else
                                 <option value="">---Please Choose---</option>
                                 <option value="AST">AST</option>
                                 <option value="EST">EST</option>
-                                <option value="CST">CST</option>
+                                <option value="CST">CST</option>;
                                 <option value="MST">MST</option>
                                 <option value="PST">PST</option>
                                 <option value="AKST">AKST</option>
@@ -143,7 +160,10 @@ else
 
                 <div class="row">
                     <div class="form-group col-md-12">
-                        @Html.LabelFor(model => model.Notes, htmlAttributes: new { @class = "control-label" })
+                        @Html.LabelFor(model => model.Notes, htmlAttributes: new { @class = "control-label" }) 
+                        <button type="button" class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="right" title="Please enter the Contact ID, Attention To, or any other information from your statement (invoice) so the Registrant Approver can identify which company you are linked to." style="margin-left: -15px;">
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                        </button>
                         <div class="">
                             @Html.EditorFor(model => model.Notes, new { htmlAttributes = new { @class = "form-control", rows = "5" } })
                             @Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
@@ -165,7 +185,7 @@ else
                                 @Html.RadioButtonFor(model => model.MfaEnabled, false) No
                                 <span class="form-check-sign"></span>
                             </label>
-                        </div>                            
+                        </div>
                         @Html.ValidationMessageFor(model => model.MfaEnabled, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -173,6 +193,7 @@ else
                 <div class="form-group">
                     <div class="col-md-offset-2 ">
                         <input type="submit" value="Register" class="btn btn-success" />
+                        <input type="button" value="Cancel" class="btn btn-default" onclick="window.location='/'" />
                     </div>
                 </div>
             </div>
@@ -200,6 +221,14 @@ else
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#PhoneNumber").mask("(999) 999-9999");
+            $("#MobileNumber").mask("(999) 999-9999");
+        });
+    </script>
 
     @if (Model.HasSSO)
     {

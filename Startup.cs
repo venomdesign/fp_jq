@@ -46,6 +46,7 @@ namespace NetEasyPay
             ConfigureOAuthTokenConsumption(app);
         }
 
+
         private void ConfigureOAuthTokenGeneration(IAppBuilder app)
         {
             app.CreatePerOwinContext(ApplicationDbContext.Create);

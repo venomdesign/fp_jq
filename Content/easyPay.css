@@ -129,9 +129,9 @@ blockquote small {
   color: #f5593d !important;
 }
 
-.glyphicon {
+/*.glyphicon {
   line-height: 1;
-}
+}*/
 
 .heart {
   color: #EB5E28;
@@ -1401,7 +1401,7 @@ textarea.form-control {
   color: #66615B;
   max-width: 200px;
   padding: 10px 10px;
-  text-align: center;
+  text-align: left;
   text-decoration: none;
 }
 
@@ -13648,4 +13648,34 @@ label.required:after {
 
 .input-validation-error {
     background-color: #f5593d;
+}
+
+@font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('../fonts/glyphicons-halflings-regular.eot');
+    src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+.glyphicon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.glyphicon-info-sign:before {
+    content: "\e086";
+}
+
+.btn-xs,
+.btn-group-xs > .btn {
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
 }
