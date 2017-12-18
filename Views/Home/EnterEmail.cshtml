@@ -101,7 +101,7 @@
                         }
                         // User has a SSO account, have them enter their password
                         else if (typeof serverResponse.auth0Id !== "undefined") {
-                            window.location = "/home/EnterPassword/?email=" + serverResponse.emailAddress;
+                            window.location = "/?emailAddress=" + serverResponse.emailAddress; 
                         }
                         else {
                             // They exist in both Auth0 and EasyPay...but they're not logged in.

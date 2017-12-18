@@ -122,6 +122,7 @@ namespace NetEasyPay.Controllers
                     log.Info(string.Format("User {0} created New user with the following data: \n\n{1}", executingUser, seralizedModel));
 
                     ViewBag.IsSuccessful = true;
+                    return Redirect("/home/ThankYou/?emailAddress=" + model.EmailAddress);
                 }
                 catch (DbEntityValidationException e)
                 {
@@ -152,7 +153,7 @@ namespace NetEasyPay.Controllers
 
             }
 
-
+            
             return View(model);
         }
 
