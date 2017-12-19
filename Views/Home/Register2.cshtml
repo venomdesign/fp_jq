@@ -70,7 +70,7 @@ else
                             <div class="text-center" style="font-weight: bold;">Password Requirements</div>
                             <div class="small">
                                 <ul>
-                                    <li>The password must have a minimum of 8 characters</li>
+                                    <li>The password must have a minimum of 8 and a maximum of 18 characters</li>
                                     <li>The password must contain characters from at least 3 of the following 4 categories</li>
                                     <li>Uppercase characters (A-Z)</li>
                                     <li>Lowercase characters (a-z)</li>
@@ -192,7 +192,7 @@ else
 
                 <div class="form-group">
                     <div class="col-md-offset-2 ">
-                        <input type="submit" value="Register" class="btn btn-success" />
+                        <input type="submit" id="btnSubmit" value="Register" class="btn btn-success" />
                         <input type="button" value="Cancel" class="btn btn-default" onclick="window.location='/'" />
                     </div>
                 </div>
@@ -224,10 +224,28 @@ else
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
 
     <script type="text/javascript">
+        var inputTrimmer = function (clickElems) {
+            this.clickElements = clickElems;
+        }
+
         $(function () {
             $("#PhoneNumber").mask("(999) 999-9999");
             $("#MobileNumber").mask("(999) 999-9999");
+
+            $("#btnSubmit").click(function () {
+                trimInputs();
+            });
         });
+
+        function trimInputs() {
+            $("input").each(function () {
+                $(this).val($(this).val().trim());
+            });
+
+            $("textarea").each(function () {
+                $(this).val($(this).val().trim());
+            });
+        }
     </script>
 
     @if (Model.HasSSO)

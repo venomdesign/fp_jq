@@ -17,7 +17,7 @@ namespace NetEasyPay.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [StringLength(18, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
+        [StringLength(18, ErrorMessage = "The {0} must be between {2} and {1} characters long.", MinimumLength = 8)]
         [RegularExpression(@"^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?\d)(?=.*?[^a-zA-Z0-9])).{8,}$", ErrorMessage = "Passwords should meet the displayed requirments.")]
         public string Password { get; set; }
 

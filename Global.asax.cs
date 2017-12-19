@@ -1,5 +1,6 @@
 ﻿using AppPropertiesLibrary;
 using log4net;
+using netApi.Common;
 using System;
 using System.Configuration;
 using System.IO;
@@ -27,7 +28,10 @@ namespace NetEasyPay
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            Log.Debug("Application components configured. Application started successfully.");
+            Log.Debug("Application components configured.");
+
+            ApplicationSettingsCheck.CheckForRequiredProperties();
+            Log.Debug("Application started successfully");
         }
 
 

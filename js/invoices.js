@@ -28,6 +28,7 @@ var GetUnpaidInvoices = function (contactId) {
     $.ajax({
         url: "/api/v1/Crrar/GetUnpaidInvoices?contactId=" + contactId
     }).done(function (results) {
+        console.log(results);
         var config = {
             parse: function (data) {
                 var events = [];
@@ -45,18 +46,19 @@ var GetUnpaidInvoices = function (contactId) {
                     attentionName: { type: "string" },
                     invoiceDate: { type: "date" },
                     arCompanyOperation: { type: "string" },
-                    referenceData: { type: "string" },
-                    currentBalance: { type: "number" }
+                    refData: { type: "string" },
+                    currentBalance: { type: "number" },
+                    customerReference: { type: "string"}
                 }
             },
             columnArray: [
                 { template: "<input type='checkbox' class='checkbox' />", width: 30 },
-                { field: "invoiceReference", title: "Ref. #" },
+                { field: "fileNumRefNum", title: "File#/Invoice#", width: 140 },
+                { field: "customerReference", title: "Customer Ref#"},
                 { field: "billToContactName", title: "Name" },
                 { field: "attentionName", title: "Attn To" },
                 { field: "invoiceDate", title: "Date", template: "#= kendo.toString(invoiceDate, 'MM/dd/yyyy') #" },
-                { field: "arCompanyOperation", title: "File No." },
-                { field: "referenceData", title: "Ref. Data" },
+                { field: "refData", title: "Ref Data" },
                 { field: "currentBalance", title: "Amount", format: "{0:c}" }
             ]
         };
@@ -132,18 +134,19 @@ var buildGrid = function (gridType, config, results) {
     grid = $("#invoiceGrid").kendoGrid({
         dataSource: {
             data: results,
-            pageSize: 10,
+            pageSize: 100,
             schema: {
                 parse: config.parse,
                 model: config.model
             }
         },
-        pageSize: 10,
+        pageSize: 100,
         sortable: true,
-        filterable: true,
+        resizable: true,
+        //filterable: true,
         pageable: {
             alwaysVisible: true,
-            pageSizes: [5, 10, 20, 100],
+            pageSizes: [20, 50, 100, 200],
             previousNext: true,
             input: false,
             info: true,

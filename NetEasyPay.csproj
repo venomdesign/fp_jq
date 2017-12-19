@@ -336,6 +336,7 @@
     <Content Include="Views\Home\EnterEmail.cshtml" />
     <Content Include="Views\Home\SsoCallback.cshtml" />
     <Content Include="Views\Home\EnterPassword.cshtml" />
+    <Content Include="Views\Home\Incomplete.cshtml" />
     <None Include="Web.DR.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

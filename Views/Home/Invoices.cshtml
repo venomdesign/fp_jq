@@ -10,13 +10,13 @@
     </div>
     <div id="row" class="runningTotal">
         <div id="left" class="text-right text-nowrap" style="width: 400px; max-width: 400px;">
-            <span class="control-label pull-left" for="CreditCard">Credit Card #:</span>
-            <select class="form-control" name="CreditCard" style="width: 250px;"></select>
+   @* <span class="control-label pull-left" for="CreditCard">Credit Card #:</span>
+    <select class="form-control" name="CreditCard" style="width: 250px;"></select>*@
         </div>
 
         <div id="middle"></div>
         <div id="right" class="text-right mw-100">
-            Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
+            Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">View Cart</button>
         </div>
     </div>
 </div>
@@ -26,7 +26,7 @@
 <div id="invoice_table" class="runningTotal total_bottom mw-100">
     <div id="row">
         <div id="right" class="text-right mw-100">
-            Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">Pay Selected</button>
+            Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">View Cart</button>
         </div>
     </div>
 </div>

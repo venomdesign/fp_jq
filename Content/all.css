@@ -5601,6 +5601,7 @@ div.k-grid-footer {
 .k-grid-content-locked,
 .k-pager-wrap {
     white-space: normal;
+
 }
 
 .k-grid-content-locked,
@@ -5615,7 +5616,12 @@ div.k-grid-footer {
     border-width: 0 1px 0 0;
 }
 
-.k-grid-content,
+.k-grid-content {
+    flex: 1 1 auto;
+    display: inline-block;
+    vertical-align: top;
+}
+
 .k-grid-footer-wrap,
 .k-grid-header-wrap {
     flex: 1 1 auto;
