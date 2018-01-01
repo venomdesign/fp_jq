@@ -4,22 +4,86 @@
         <div id="middle"></div>
         <div class="pull-right text-right" id="right" style="height: 40px;">
             <span class="control-label pull-left" for="CreditCard">Export Format:</span>
-            @*<button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>*@
             <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
         </div>
     </div>
+       <div id="row">
+            <div id="left" class="text-right text-nowrap" style="width: 400px; max-width: 400px; padding: 0;">
+                <span class="control-label pull-left" for="SuperSearch">Search:</span>
+                <input type="text" class="form-control pull-left" name="SuperSearch" style="width: 250px;" onmouseup="if (this.value.length == 0) { resetForm(); } " onkeyup="searchFor(this, 'payments')" />
+                <input type="button" class="btn btn-round" onclick='showAdvanced();' style="margin-left: 10px;" value="Advanced" />
+            </div>
+            <div id="middle"></div>
+            <div id="right" class="text-right mw-100">
+            </div>
+        </div>
+
+        <div id="row" class="advancedSearch">
+            <div id="left" class="text-nowrap" style="width: 250px; max-width: 250px; padding: 0;">
+                <fieldset data-role="controlgroup" style="display: inline;">
+                    <legend>Choose your Search Type:</legend>
+                    <input type="radio" name="searchType" id="dateSearch" value="date" onclick="showDates()">Search By Date
+                    <br />
+                    <input type="radio" name="searchType" id="amountSearch" value="amount" onclick="showAmounts()">Search By Amount
+                </fieldset>
+            </div>
+            <div id="middle"></div>
+            <div id="right">
+                <div id="noSelection">
+                    Choose critera to begin search...
+                </div>
+                <div id="dates">
+                    <fieldset data-role="controlgroup" style="display: inline;">
+                        <label for="startDate">Start Date</label>
+                        <input id="startDate" type="text" style="width: 180px;" />
+                        <label for="endDate" style="padding-left: 25px;">End Date</label>
+                        <input id="endDate" type="text" style="width: 180px;" />
+                        <input type="button" class="btn btn-round" onclick='searchDates("invoices");' style="margin-left: 10px;" value="Go" />
+                        <input type="button" class="btn btn-round" onclick='refreshGrid(resultSet); $("#startDate").value = ""; $("#endDate").val = "";' style="margin-left: 10px;" value="Clear" />
+                    </fieldset>
+                </div>
+                <div id="amounts">
+                    <fieldset data-role="controlgroup" style="display: inline;">
+                        <label for="lowAmount">Low Amount</label>
+                        <input id="lowAmount" style="width: 100px;" />
+                        <label for="highAmount" style="padding-left: 25px;">High Amount</label>
+                        <input id="highAmount" style="width: 100px;" />
+                        <input type="button" class="btn btn-round" onclick='searchAmounts("invoices");' style="margin-left: 10px;" value="Go" />
+                        <input type="button" class="btn btn-round" onclick='refreshGrid(resultSet); $("#lowAmount").value = ""; $("#highAmount").val = "";' style="margin-left: 10px;" value="Clear" />
+                    </fieldset>
+                </div>
+            </div>
+        </div>
 </div>
 <div id="row">
     <div id="invoiceGrid"></div>
 </div>
 
 @section pageScripts{
-    
+
+    <script src="~/Scripts/moment.min.js"></script>
     <script src="~/js/invoices.js"></script>
     <script>
 
         $(document).ready(function () {
+            $(".advancedSearch").toggle("show");
             GetPaymentHistory(1000009);
+            $("#startDate").kendoDatePicker({ format: 'MM/dd/yyyy' });
+            $("#endDate").kendoDatePicker({ format: 'MM/dd/yyyy' });
+            $("#lowAmount").kendoNumericTextBox();
+            $("#highAmount").kendoNumericTextBox();
         });
+
+        $('#SuperSearch').keyup(function () {
+            delay(function () {
+                searchFor($('#SuperSearch').val(), 'history');
+            }, 500);
+        });
+
+        function resetForm() {
+            $(".k-datepicker input").val('');
+            $(".k-numeric input").val('');
+            refreshGrid(resultSet);
+        }
     </script>
 }

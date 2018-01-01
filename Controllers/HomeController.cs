@@ -72,14 +72,6 @@ namespace NetEasyPay.Controllers
             return View();
         }
 
-        public ActionResult EnterPassword(string email)
-        {
-            if (string.IsNullOrEmpty(email))
-                return RedirectToAction("EnterEmail");
-
-            var model = new EnterPasswordModel { Email = email };
-            return View(model);
-        }
 
         public ActionResult Register2(string email, bool? sso)
         {
@@ -105,11 +97,22 @@ namespace NetEasyPay.Controllers
             // HACK MASTER!!! Need to convert the RegistrationModel into the EasyPayAuth0User model
             var seralizedModel = JsonConvert.SerializeObject(model);
             var newUser = JsonConvert.DeserializeObject<EasyPayAuth0User>(seralizedModel);
+            newUser.AddToAuth0 = !model.HasSSO;
 
             if (model.HasSSO == true)
             {
                 ModelState.Remove("Password");
                 ModelState.Remove("ConfirmPassword");
+            }
+            else
+            {
+                // Validate the password agains the email address
+                // - The password cannot be the same as the username and cannot contain 3 or more consecutive characters from the username
+                var isPasswordValid = IsPasswordValid(model.EmailAddress, model.Password);
+                if (!isPasswordValid)
+                {
+                    ModelState.AddModelError("Password", "Passwords should meet the displayed requirments.");
+                }
             }
 
             if (ModelState.IsValid)
@@ -165,6 +168,22 @@ namespace NetEasyPay.Controllers
         public ActionResult SsoCallback()
         {
             return View();
+        }
+
+        private bool IsPasswordValid(string username, string password)
+        {
+            var testUserName = username.ToLower();
+            var testPassword = password.ToLower();
+
+            for (int i = 0; (i + 3) <= testUserName.Length; i++)
+            {
+                if (testPassword.IndexOf(testUserName.Substring(i, 3)) != -1)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
     }

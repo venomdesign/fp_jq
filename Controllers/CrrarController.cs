@@ -1,10 +1,15 @@
 ﻿using Microsoft.Web.Http;
+using netApi.Repositories.Authorization.Model;
 using netApi.Repositories.CRRAR.Models;
 using NetEasyPay.Interfaces;
 using NetEasyPay.Services;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Web.Helpers;
 using System.Web.Http;
+using Newtonsoft.Json.Serialization;
 
 namespace NetEasyPay.Controllers
 {
@@ -16,11 +21,8 @@ namespace NetEasyPay.Controllers
 
         public CrrarController()
         {
-//#if DEBUG
-//            _service = new MOCKCrrarService();
-//#else
             _service = new CrrarService();
-//#endif 
+
             log.Info(string.Format("Started CRRARController at {0}", DateTime.UtcNow));
         }
 
@@ -102,16 +104,16 @@ namespace NetEasyPay.Controllers
         {
             try
             {
-                //TODO:: TAKE THIS BACK OUT ONCE WE HAVE A HISTORY TABLE SETUP
-                _service = new MOCKCrrarService();
-                return _service.GetInvoiceHistory(contactId);
+                _service = new CrrarService();
+                List <TRANSACTION_HISTORY> resp = _service.GetInvoiceHistory(contactId);
+                return JsonConvert.SerializeObject(resp);
             }
             catch (Exception e)
             {
                 var message = $"Error retreiving invoice history for Contact ID: {contactId}";
                 log.Error(message, e);
 
-                return BadRequest(message);
+                return null;
             }
         }
 

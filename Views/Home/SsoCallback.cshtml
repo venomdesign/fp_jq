@@ -43,7 +43,6 @@
                 else if (err.errorDescription.indexOf("Password Expired") > -1) {
                     var obj = jQuery.parseJSON(err.errorDescription)
                     window.location = "https://at-int.fntg.com" + "/password/expired?code=" + obj.code + "&username=" + obj.username + "&returnUrl=" + hostUrl;
-                    return
                 }
                 else {
                     $('#Error').show();

@@ -127,6 +127,8 @@ blockquote small {
 
 .text-danger, .text-danger:hover {
   color: #f5593d !important;
+  font-weight: bold;
+  font-style: italic;
 }
 
 /*.glyphicon {
@@ -13647,7 +13649,9 @@ label.required:after {
 }
 
 .input-validation-error {
-    background-color: #f5593d;
+    background-color: #FFC0A4;
+    border: 1px solid #f5593d;
+    color: #f5593d;
 }
 
 @font-face {
@@ -13670,6 +13674,10 @@ label.required:after {
 
 .glyphicon-info-sign:before {
     content: "\e086";
+}
+
+.glyphicon-trash:before {
+    content: "\e020";
 }
 
 .btn-xs,

@@ -24,13 +24,13 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="button" value="Submit" class="btn btn-primary"  id="btnSubmit" />
+                <input type="button" value="Submit" class="btn btn-success"  id="btnSubmit" />
             </div>
         </div>
     </div>
 
     <div class="form-horizontal" id="errorSummary" style="display: none;">
-        <div class="col-md-10 bg-warning" style="border-radius: 5px;" id="errorMessage"></div>
+        <div class="col-md-10 alert alert-danger" style="border-radius: 5px;" id="errorMessage"></div>
     </div>
 }
 
@@ -59,6 +59,7 @@
 
             $("#btnSubmit").click(function (evt) {
                 evt.preventDefault();
+                trimInputs();
                 if ($("form").valid()) {
                     validateEasyPayUser(true);
                 }
@@ -90,17 +91,18 @@
                         // Is Internal Email... flyby denied!
                         if (typeof serverResponse.isInternal !== "undefined") {
                             if (serverResponse.isInternal) {
-                                $("#errorMessage").html("Please contact the helpdesk at XXX-XXX-XXXX for assistance with access using an Internal email address.");
+                                $("#errorMessage").html("Please contact the helpdesk at (800) 586-0031 for assistance with access using an Internal email address.");
                                 $("#errorSummary").show();
                             }
                         }
                         // User's account is blocked at Auth0... flyby denied!
                         else if (typeof serverResponse.Auth0Blocked !== "undefined") {
-                            $("#errorMessage").html("This account has been blocked. Please contact the helpdesk at XXX-XXX-XXXX for assistance.");
+                            $("#errorMessage").html("This account has been blocked. Please contact the helpdesk at (800) 586-0031 for assistance.");
                             $("#errorSummary").show();
                         }
                         // User has a SSO account, have them enter their password
                         else if (typeof serverResponse.auth0Id !== "undefined") {
+                            alert("User has a sso account... enter password.");
                             window.location = "/?emailAddress=" + serverResponse.emailAddress; 
                         }
                         else {

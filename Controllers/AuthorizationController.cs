@@ -117,15 +117,18 @@ namespace NetEasyPay.Controllers
             // TODO: Don't use exceptions as Status Switching...
             catch (GetUserInactiveException e)
             {
+                log.Info(string.Format("Inactive user login attempted.  Email: {0}  Message: {1}", er, e.Message));
                 return "/?status=inactive";
             }
             catch (GetUserLockedAccountException e)
             {
+                log.Info(string.Format("Locked user login attempted.  Email: {0}  Message: {1}", er, e.Message));
                 return "/?status=locked";
             }
             catch (Exception e)
             {
                 //there was no user, go back to the registration page
+                log.Info(string.Format("No user found with specified email address {0}.  Message: {1}", er, e.Message));
                 //return "/home/register?q1=true&q2=" + er;
                 return $"/home/register2/?email={er}&sso=true";
             }

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Tell MSBUILD not to auto-generate replacement tokens for connection strings in web.config.  We're handling that through transforms -->
+  <PropertyGroup>
+    <AutoParameterizationWebConfigConnectionStrings>false</AutoParameterizationWebConfigConnectionStrings>
+  </PropertyGroup>
+
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll" />
+
+  <!-- Copy deployment files and create the config transforms -->
+  <Target Name="CreateDeploymentFiles" AfterTargets="Package" DependsOnTargets="PackageUsingManifest">
+
+    <!-- Xml File Transforms -->
+    <PropertyGroup>
+      <ConfigDestinationPath>$(PackageDestinationRoot)\..\Configs</ConfigDestinationPath>
+    </PropertyGroup>
+    <MakeDir Directories="$(ConfigDestinationPath)" />
+        <ItemGroup>
+		<ProjectConfigFiles Include="$(MSBuildProjectDirectory)\web.*.config" />
+	</ItemGroup>
+    
+	<Message Text="Transforming: %(ProjectConfigFiles.Identity)" />
+	 <TransformXml Condition="'@(ProjectConfigFiles)' != ''"
+                  Source="$(MSBuildProjectDirectory)\$(ProjectConfigFileName)"
+                  Transform="%(ProjectConfigFiles.Identity)"
+                  Destination="$(ConfigDestinationPath)\%(ProjectConfigFiles.Filename)%(ProjectConfigFiles.Extension)" />
+    <!--
+    <TransformXml Source="Web.config" Transform="Web.Dev.config" Destination="$(ConfigDestinationPath)\Web.Dev.config" />
+    <TransformXml Source="Web.config" Transform="Web.Int.config" Destination="$(ConfigDestinationPath)\Web.Int.config" />
+    <TransformXml Source="Web.config" Transform="Web.LoadTest.config" Destination="$(ConfigDestinationPath)\Web.LoadTest.config" />
+    <TransformXml Source="Web.config" Transform="Web.UAT.config" Destination="$(ConfigDestinationPath)\Web.UAT.config" />
+    <TransformXml Source="Web.config" Transform="Web.Release.config" Destination="$(ConfigDestinationPath)\Web.Release.config" />
+    <TransformXml Source="Web.config" Transform="Web.QA1.config" Destination="$(ConfigDestinationPath)\Web.QA1.config" />
+    <TransformXml Source="Web.config" Transform="Web.QA2.config" Destination="$(ConfigDestinationPath)\Web.QA2.config" />
+    -->
+  </Target>
+
+  <!--
+    This target shortens the file paths in the web deploy package.
+    See: Sayed Ibrahim Hashimi's blog
+    http://sedodream.com/2013/01/13/WebPackagingFixingTheLongPathIssue.aspx
+  -->
+  <PropertyGroup>
+    <PackagePath Condition=" '$(PackagePath)'=='' ">site</PackagePath>
+    <PackageDependsOn>$(PackageDependsOn);AddReplaceRuleForAppPath;</PackageDependsOn>
+  </PropertyGroup>
+  <Target Name="AddReplaceRuleForAppPath">
+    <PropertyGroup>
+      <_PkgPathFull>$([System.IO.Path]::GetFullPath($(WPPAllFilesInSingleFolder)))</_PkgPathFull>
+    </PropertyGroup>
+    <!-- escape the text into a regex -->
+    <EscapeTextForRegularExpressions Text="$(_PkgPathFull)">
+      <Output TaskParameter="Result" PropertyName="_PkgPathRegex" />
+    </EscapeTextForRegularExpressions>
+    <!-- add the replace rule to update the path -->
+    <ItemGroup>
+      <MsDeployReplaceRules Include="replaceFullPath">
+        <Match>$(_PkgPathRegex)</Match>
+        <Replace>$(PackagePath)</Replace>
+      </MsDeployReplaceRules>
+    </ItemGroup>
+  </Target>
+</Project>

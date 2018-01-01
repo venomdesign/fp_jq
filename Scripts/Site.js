@@ -33,4 +33,22 @@
     return obj;
 }
 
+function trimInputs() {
+    $("input").each(function () {
+        $(this).val($(this).val().trim());
+    });
 
+    $("textarea").each(function () {
+        $(this).val($(this).val().trim());
+    });
+}
+
+$(function () {
+    $("input").change(function () {
+        $(this).val($(this).val().trim());
+    });
+
+    $("textarea").change(function () {
+        $(this).val($(this).val().trim());
+    })
+});

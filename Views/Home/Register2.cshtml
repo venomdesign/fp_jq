@@ -24,6 +24,13 @@ else if (ViewBag.IsSuccessful != null && ViewBag.IsSuccessful == false)
 }
 else
 {
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
     <div class="container">
         @using (Html.BeginForm())
         {
@@ -76,7 +83,7 @@ else
                                     <li>Lowercase characters (a-z)</li>
                                     <li>Base 10 digits (0-9)</li>
                                     <li>Non-alphanumeric (for example: !, $, # or %)</li>
-                                    <li>The password cannot be the same as the username and cannot contain 3 or more consecutive characters from the username</li>
+                                    <li>The password cannot be the same as the Email Address and cannot contain 3 or more consecutive characters from the Email Address</li>
                                 </ul>
                             </div>
                         </div>
@@ -144,13 +151,13 @@ else
                         <div class="">
                             <select class="form-control" id="TimeZone" name="TimeZone" required>
                                 <option value="">---Please Choose---</option>
-                                <option value="AST">AST</option>
-                                <option value="EST">EST</option>
-                                <option value="CST">CST</option>;
-                                <option value="MST">MST</option>
-                                <option value="PST">PST</option>
-                                <option value="AKST">AKST</option>
-                                <option value="HST">HST</option>
+                                <option @(Model.TimeZone == "AST" ? "selected" : "") value="AST">AST</option>
+                                <option @(Model.TimeZone == "EST" ? "selected" : "") value="EST">EST</option>
+                                <option @(Model.TimeZone == "CST" ? "selected" : "") value="CST">CST</option>;
+                                <option @(Model.TimeZone == "MST" ? "selected" : "") value="MST">MST</option>
+                                <option @(Model.TimeZone == "PST" ? "selected" : "") value="PST">PST</option>
+                                <option @(Model.TimeZone == "AKST" ? "selected" : "") value="AKST">AKST</option>
+                                <option @(Model.TimeZone == "HST" ? "selected" : "") value="HST">HST</option>
                             </select>
                             @Html.ValidationMessageFor(model => model.TimeZone, "", new { @class = "text-danger" })
                         </div>
@@ -201,7 +208,7 @@ else
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="pleaseWaitModal" tabindex="-1" role="dialog" aria-labelledby="pleaseWaitModalLabel" aria-hidden="true">
+    <div class="modal fade" id="pleaseWaitModal" tabindex="-1" role="dialog" aria-labelledby="pleaseWaitModalLabel" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -222,6 +229,7 @@ else
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    <script src="~/Scripts/textcounter.min.js"></script>
 
     <script type="text/javascript">
         var inputTrimmer = function (clickElems) {
@@ -235,17 +243,9 @@ else
             $("#btnSubmit").click(function () {
                 trimInputs();
             });
+
+            $("#Notes").textcounter({max: 4000, countDown: true, countDownText: "%d characters remaining"});
         });
-
-        function trimInputs() {
-            $("input").each(function () {
-                $(this).val($(this).val().trim());
-            });
-
-            $("textarea").each(function () {
-                $(this).val($(this).val().trim());
-            });
-        }
     </script>
 
     @if (Model.HasSSO)

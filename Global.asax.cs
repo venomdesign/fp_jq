@@ -24,9 +24,13 @@ namespace NetEasyPay
 
             Log.Debug("Attempting to configure application componets.");
             AreaRegistration.RegisterAllAreas();
+            Log.Info("Starting WebApiConfig.Register");
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            Log.Info("Starting FilterConfig.RegisterGlobalFilters");
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            Log.Info("Starting RegisterRoutes from RouteTable");
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            Log.Info("Starting RegisterBundles from BundleTable");
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Log.Debug("Application components configured.");
 

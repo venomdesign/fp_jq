@@ -8,6 +8,12 @@
         <div id="auth-error" class="alert alert-danger" style="display: none;">
             <strong>Error!</strong> Email Address or Password incorrect.
         </div>
+        <div id="auth-internal-user" class="alert alert-danger" style="display: none;">
+            <span>
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                Account is Internal. Please contact <a href="mailto:agenttrax@fnf.com?Subject=Account%20Blocked">agenttrax@fnf.com</a> or call (800) 586-0031.
+            </span>
+        </div>
         <div id="auth0-blocked" class="alert alert-danger" style="display: none;">
             <span>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -34,9 +40,8 @@
             <div class="errorCheck"><input type="password" id="password" name="password" class="form-control" maxlength="50" required></div>
         </div>
         <div class="form-group">
-            <button id="Login" class="btn btn-round" type="submit" title="Log In">
+            <button id="Login" class="btn btn-success" type="submit" title="Log In">
                 Log In
-                <i id="logging-on" class="fa fa-spinner fa-spin" aria-hidden="true" style="display: none;"></i>
             </button>
         </div>
         <div class="form-group">
@@ -45,7 +50,7 @@
         </div>
         <div>
             <p>
-                By accessing the website name, you are confirming that you are an authorized user and that you have read, understood, and agree to be bound by the <a style="text-decoration: underline !important; color: #007bff !important;" href="http://www.fnf.com/termsofuse/">FNF Terms of Use</a> and the <a style="text-decoration: underline !important; color: #007bff !important;" href="http://www.fnf.com/privacy/">FNF Privacy Notice</a>.
+                By accessing the website name, you are confirming that you are an authorized user and that you have read, understood, and agree to be bound by the <a style="text-decoration: underline !important; color: #007bff !important;" target="_blank" href="http://www.fnf.com/termsofuse/">FNF Terms of Use</a> and the <a style="text-decoration: underline !important; color: #007bff !important;" target="_blank" href="http://www.fnf.com/privacy/">FNF Privacy Notice</a>.
             </p>
         </div>
     </form>
@@ -104,8 +109,9 @@
                     e.preventDefault();
                     HideAccountBlockedMessage();
                     AuthErrorHide();
-                    ShowLoading();
+                    //ShowLoading();
                     HideFnfError();
+                    toggleInternalUserError(false);
 
                     $.ajax({
                         type: "GET",
@@ -115,29 +121,50 @@
                             userConnection = data.connection;
                             var status = data.status;
 
-                            webAuth.redirect.loginWithCredentials({
-                                connection: userConnection,
-                                username: $('#userName').val().trim(),
-                                password: $('#password').val().trim(),
-                                scope: "openid profile email",
-                                responseType: "token",
-                                type: 'login'
-                            },
-                                function (err, authResult) {
-                                    if (err.statusCode != null) {
-                                        if (err.statusCode == 429) {
-                                            ShowAccountBlockedMessage();
-                                            HideLoading();
-                                        }
-                                        else {
-                                            AuthErrorShow();
-                                            HideLoading();
+                            $.ajax({
+                                url: "/api/v1/Authorization/ValidateEmail?SSO=true&email=" + $('#userName').val().trim(),
+                                type: "POST",
+                                dataType: "json",
+                                success: function (resp) {
+                                    console.log("response from validateEmail: " + resp);
+
+                                    if (resp !== null) {
+                                        var results = JSON.parse(resp.results);
+                                        if (typeof results.isInternal !== "undefined") {
+                                            if (results.isInternal) {
+                                                toggleInternalUserError(true);
+                                                return;
+                                            }
                                         }
                                     }
-                                })
+
+                                    webAuth.redirect.loginWithCredentials({
+                                        connection: userConnection,
+                                        username: $('#userName').val().trim(),
+                                        password: $('#password').val().trim(),
+                                        scope: "openid profile email",
+                                        responseType: "token",
+                                        type: 'login'
+                                    },
+                                        function (err, authResult) {
+                                            if (err.statusCode != null) {
+                                                if (err.statusCode == 429) {
+                                                    ShowAccountBlockedMessage();
+                                                    //HideLoading();
+                                                }
+                                                else {
+                                                    AuthErrorShow();
+                                                    //HideLoading();
+                                                }
+                                            }
+                                        })
+
+                                }
+                            })
+
                         },
                         error: function (textStatus, errorThrown) {
-                            HideLoading();
+                            //HideLoading();
                             ShowFnfError();
                         }
                     });
@@ -145,13 +172,13 @@
                 }
             });
 
-            function ShowLoading() {
-                $("#logging-on")[0].style.display = 'inline-block';
-            }
+            //function ShowLoading() {
+            //    $("#logging-on")[0].style.display = 'inline-block';
+            //}
 
-            function HideLoading() {
-                $("#logging-on")[0].style.display = 'none';
-            }
+            //function HideLoading() {
+            //    $("#logging-on")[0].style.display = 'none';
+            //}
 
             function AuthErrorShow() {
                 $("#auth-error")[0].style.display = 'block';
@@ -180,7 +207,7 @@
                 }
             }
 
-            
+
         });
 
         function ToggleAccountInactiveMessage(tgl) {
@@ -195,6 +222,13 @@
                 $("#auth0-blocked").show();
             else
                 $("#auth0-blocked").hide();
+        }
+
+        function toggleInternalUserError(tgl) {
+            if (tgl == true)
+                $("#auth-internal-user").show();
+            else
+                $("#auth-internal-user").hide();
         }
 
         validator.validate({
@@ -233,23 +267,23 @@
                 }
 
                 // Add the span element, if doesn't exists, and apply the icon classes to it.
-                if (!element.next("span")[0]) {
-                    $("<span class='fa fa-times form-control-feedback'></span>").insertAfter(element);
-                }
+                //if (!element.next("span")[0]) {
+                //    $("<span class='fa fa-times form-control-feedback'></span>").insertAfter(element);
+                //}
             },
             success: function (label, element) {
                 // Add the span element, if doesn't exists, and apply the icon classes to it.
-                if (!$(element).next("span")[0]) {
-                    $("<span class='fa fa-check form-control-feedback'></span>").insertAfter($(element));
-                }
+                //if (!$(element).next("span")[0]) {
+                //    $("<span class='fa fa-check form-control-feedback'></span>").insertAfter($(element));
+                //}
             },
             highlight: function (element, errorClass, validClass) {
                 $(element).parents(".errorCheck").addClass("has-danger").removeClass("has-success");
-                $(element).next("span").addClass("fa-times").removeClass("fa-check");
+                //$(element).next("span").addClass("fa-times").removeClass("fa-check");
             },
             unhighlight: function (element, errorClass, validClass) {
                 $(element).parents(".errorCheck").addClass("has-success").removeClass("has-danger");
-                $(element).next("span").addClass("fa-check").removeClass("fa-times");
+                //$(element).next("span").addClass("fa-check").removeClass("fa-times");
             }
         });
     </script>

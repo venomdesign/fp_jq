@@ -1,17 +1,21 @@
-﻿using netApi.Repositories.CRRAR.Interfaces;
+﻿using netApi.Repositories.Authorization.Model;
+using netApi.Repositories.CRRAR.Interfaces;
+using netApi.Repositories.CRRAR.Models;
 using netApi.Repositories.CRRAR.Repositories;
 using NetEasyPay.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace NetEasyPay.Services
 {
     public class CrrarService : ICrrarService
     {
         private readonly ICrrarRepository _repository;
+        private readonly FopsAuthorization _context = new FopsAuthorization();
 
         public CrrarService()
         {
-            _repository = new CrrarRepository();
+            _repository = new CrrarRepository(_context);
         }
 
         public object GetContactByAttnName(string attnName)
@@ -44,9 +48,9 @@ namespace NetEasyPay.Services
             throw new System.NotImplementedException();
         }
 
-        public object GetInvoiceHistory(int contactId)
+        public List<TRANSACTION_HISTORY> GetInvoiceHistory(int contactId)
         {
-            throw new System.NotImplementedException();
+            return _repository.GetInvoiceHistory(contactId);
         }
 
         public object GetPaidInvoices(int contactId)
@@ -64,7 +68,7 @@ namespace NetEasyPay.Services
             return _repository.GetPendingInvoices(contactId, attnId);
         }
 
-        public object GetUnpaidInvoices(int contactId)
+        public List<Invoice> GetUnpaidInvoices(int contactId)
         {
             return _repository.GetUnpaidInvoices(contactId);
         }

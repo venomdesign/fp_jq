@@ -4,19 +4,56 @@
         <div id="middle"></div>
         <div class="pull-right text-right" id="right" style="height: 40px;">
             <span class="control-label pull-left" for="CreditCard">Export Format:</span>
-           @* <button class="btn btn-neutral k-button k-grid-pdf" id="PdfExport" title="Export to PDF"><i class="fa fa-file-pdf-o" style="font-size: 1.25rem"></i></button>*@
             <button class="btn btn-neutral k-button k-grid-excel" id="excelExport" title="Export to Excel"><i class="fa fa-file-excel-o" style="font-size: 1.25rem"></i></button>
         </div>
     </div>
     <div id="row" class="runningTotal">
-        <div id="left" class="text-right text-nowrap" style="width: 400px; max-width: 400px;">
-   @* <span class="control-label pull-left" for="CreditCard">Credit Card #:</span>
-    <select class="form-control" name="CreditCard" style="width: 250px;"></select>*@
+        <div id="left" class="text-right text-nowrap" style="width: 400px; max-width: 400px; padding: 0;">
+            <span class="control-label pull-left" for="SuperSearch">Search:</span>
+            <input type="text" class="form-control pull-left" id="SuperSearch" name="SuperSearch" style="width: 250px;" onmouseup="if (this.value.length == 0) { resetForm(); } " onkeyup="searchFor(this, 'invoices')" />
+            <input type="button" class="btn btn-round" onclick='$("#SuperSearch").val(""); showAdvanced();' style="margin-left: 10px;" value="Advanced" />
         </div>
-
         <div id="middle"></div>
         <div id="right" class="text-right mw-100">
             Invoices: <span class="invCount"></span>&nbsp;&nbsp;Total Payment: $<span class="invTotal"></span> <button class="btn btn-round selectedInvoice" onclick='PaySelected();' data-toggle="modal" data-target="#myModal" style="margin-left: 15px;" [disabled]="!hasSelectedAnItem">View Cart</button>
+        </div>
+    </div>
+    <div id="row" class="advancedSearch">
+        <div id="left" class="text-nowrap" style="width: 250px; max-width: 250px; padding: 0;">
+            <fieldset data-role="controlgroup" style="display: inline;">
+                <legend>Choose your Search Type:</legend>
+                <input type="radio" name="searchType" id="dateSearch" value="date" onclick="showDates()">Search By Date
+                <br />
+                <input type="radio" name="searchType" id="amountSearch" value="amount" onclick="showAmounts()">Search By Amount
+                <input type="radio" name="searchType" id="defaultSearch" value="none" hidden checked />
+            </fieldset>
+        </div>
+        <div id="middle"></div>
+        <div id="right">
+            <div id="noSelection">
+                Choose critera to begin search...
+            </div>
+            <div id="dates">
+                <fieldset data-role="controlgroup" style="display: inline;">
+                    <label for="startDate">Start Date</label>
+                    <input id="startDate" type="text" style="width: 180px;" />
+                    <label for="endDate" style="padding-left: 25px;">End Date</label>
+                    <input id="endDate" type="text" style="width: 180px;" />
+                    <input type="button" class="btn btn-round" onclick='searchDates("invoices");' style="margin-left: 10px;" value="Go" />
+                    <input type="button" class="btn btn-round" onclick='resetForm();' style="margin-left: 10px;" value="Clear" />
+
+                </fieldset>
+            </div>
+            <div id="amounts">
+                <fieldset data-role="controlgroup" style="display: inline;">
+                    <label for="lowAmount">Low Amount</label>
+                    <input id="lowAmount" style="width: 120px;" />
+                    <label for="highAmount" style="padding-left: 25px;">High Amount</label>
+                    <input id="highAmount" style="width: 120px;" />
+                    <input type="button" class="btn btn-round" onclick='searchAmounts("invoices");' style="margin-left: 10px;" value="Go" />
+                    <input type="button" class="btn btn-round" onclick='resetForm();' style="margin-left: 10px;" value="Clear" />
+                </fieldset>
+            </div>
         </div>
     </div>
 </div>
@@ -30,37 +67,159 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="paymentSummary" aria-hidden="true">
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="paymentSummary" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-center" id="paymentSummary">Invoice Summary</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <h5 class="modal-title text-center" id="paymentSummary">Invoice Summary</h5>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    @*<div>{{invoice.OrderNumber}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.InvoiceDate}}&nbsp;&nbsp;&nbsp;&nbsp;{{invoice.CurrentBalance}}</div>*@
+                    <div class="col-md-2">
+                        Pay Using:
+                    </div>
+                    <div class="col-md-10">
+                        <form class="form-horizontal">
+                            <select class="form-control" name="CreditCard"></select>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table" id="summaryTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>File#/Invoice#</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryDetails"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><button type="button" class="btn btn-sm btn-danger" onclick="RemoveSelectedSummaryItems()" title="Remove Selected"><span class="glyphicon glyphicon-trash"></span></button></td>
+                                    <td></td>
+                                    <td id="summaryTotal"></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="left-side">
-                    <button type="button" class="btn btn-danger btn-link">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Cancel</button>
                 </div>
                 <div class="divider"></div>
                 <div class="right-side">
-                    <button type="button" class="btn btn-success btn-link">Pay Selected</button>
+                    <button type="button" class="btn btn-success btn-link">Pay Now</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section pageScripts{
+<div class="modal fade" id="pleaseWaitModal" tabindex="-1" role="dialog" aria-labelledby="pleaseWaitModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="pleaseWaitModalLabel">Please Wait</h4>
+            </div>
+            <div class="modal-body center-block">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
-<script src="~/js/invoices.js"></script>   
+@section pageScripts{
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/js/invoices.js"></script>
+    <script src="~/Scripts/accounting.js"></script>
     <script>
-        GetUnpaidInvoices(138098);
+        $(document).ready(function () {
+            $(".advancedSearch").toggle("show");
+            GetUnpaidInvoices(138098);
+            $("#startDate").kendoDatePicker({ format: 'MM/dd/yyyy' });
+            $("#endDate").kendoDatePicker({ format: 'MM/dd/yyyy' });
+            $("#lowAmount").kendoNumericTextBox();
+            $("#highAmount").kendoNumericTextBox();
+        });
+
+        $('#SuperSearch').keyup(function () {
+            delay(function () {
+                searchFor($('#SuperSearch').val(), 'invoices');
+            }, 1000);
+        });
+
+        function resetForm() {
+            $(".k-datepicker input").val('');
+            $(".k-numeric-wrap input").val('');
+            $("#noSelection").show();
+            $("#dates").hide();
+            $("#amounts").hide();
+            $("#defaultSearch").prop("checked", true);
+            refreshGrid(resultSet);
+        }
+
+        var runningTotal = 0.0;
+
+        function PaySelected() {
+            var grid = $("#invoiceGrid").data("kendoGrid");
+            var checkedInputs = $("._row-selector:checked");
+            var summaryDetails = $("#summaryDetails");
+            summaryDetails.children().remove();
+
+            $("select[name='CreditCard']").children().remove();
+            GetTokensForUser(1008);
+
+            runningTotal = 0.0;
+
+            checkedInputs.each(function () {
+                var row = $(this).closest("tr");
+                var dataItem = grid.dataItem(row);
+                runningTotal += dataItem.currentBalance;
+
+                var detailRow = $("<tr class='" + dataItem.uid + "'>");
+                detailRow.html(
+                    "<td><input type='checkbox' class='checkbox _summary-row-checkbox' data-id='" + dataItem.uid + "'/></td>" +
+                    "<td>" + dataItem.fileNumRefNum + "</td>" +
+                    "<td>" + accounting.formatMoney(dataItem.currentBalance) + "</td>" +
+                    "<td><button type='button' class='btn btn-xs btn-danger' onclick='RemoveSummaryItem(\"" + dataItem.uid + "\")' alt='Remove'><span class='glyphicon glyphicon-trash'></span></button></td>");
+                summaryDetails.append(detailRow);
+            });
+
+            UpdateSummaryTotal()
+        }
+
+        function RemoveSummaryItem(itemId) {
+            var grid = $("#invoiceGrid").data("kendoGrid");
+            var row = grid.tbody.find("tr[data-uid='" + itemId + "']");
+            var dataItem = grid.dataItem(row);
+
+            runningTotal -= dataItem.currentBalance;
+            UpdateSummaryTotal();
+
+            row.find("._row-selector").click();
+            $("." + itemId).remove();
+        }
+
+        function RemoveSelectedSummaryItems() {
+            var checkedInputs = $("._summary-row-checkbox:checked");
+            checkedInputs.each(function () {
+                RemoveSummaryItem($(this).data("id"));
+            });
+        }
+
+        function UpdateSummaryTotal() {
+            var amt = accounting.formatMoney(runningTotal);
+            $("#summaryTotal").text(amt);
+        }
     </script>
 }
